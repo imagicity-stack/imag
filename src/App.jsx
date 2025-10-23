@@ -171,14 +171,13 @@ function DotBackdrop() {
       <DotGrid
         className="h-full w-full"
         style={{ width: '100%', height: '100%' }}
-        dotSize={10}
-        gap={20}
+        dotSize={6}
+        gap={18}
         baseColor="#A50000"
         activeColor="#FFD347"
-        proximity={150}
-        shockRadius={240}
+        proximity={140}
+        shockRadius={220}
         shockStrength={6}
-        resistance={900}
         returnDuration={1.4}
       />
     </div>
@@ -411,7 +410,7 @@ function FAQSection() {
 
   return (
     <section id="faq" className="mx-auto max-w-4xl px-6 py-24">
-      <div className="rounded-3xl border border-white/10 bg-night/60 p-10 backdrop-blur">
+      <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
         <button
           onClick={() => setOpen((prev) => !prev)}
           className="group flex w-full items-center justify-between rounded-full px-4 py-2 text-left text-sm uppercase tracking-[0.35em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
@@ -661,7 +660,7 @@ function MainSite() {
           </motion.div>
         </section>
 
-        <section id="services" className="bg-night/80 py-24">
+        <section id="services" className="py-24">
           <div className="mx-auto max-w-6xl px-6">
             <p className="text-sm uppercase tracking-[0.4em] text-white/60">Core Services</p>
             <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Choose your weapons.</h2>
@@ -699,7 +698,7 @@ function MainSite() {
         </section>
 
         <section id="pricing" className="mx-auto max-w-4xl px-6 py-24">
-          <div className="rounded-3xl border border-white/10 bg-night/70 p-10 backdrop-blur">
+          <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
             <p className="text-sm uppercase tracking-[0.4em] text-white/60">Pricing</p>
             <h2 className="mt-4 text-3xl font-semibold md:text-4xl">You want numbers. We want context.</h2>
             <PricingModal />
@@ -707,7 +706,7 @@ function MainSite() {
         </section>
 
         <section id="portfolio" className="mx-auto max-w-6xl px-6 py-24">
-          <div className="rounded-3xl border border-white/10 bg-night/60 p-10 backdrop-blur">
+          <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
             <div className="max-w-2xl">
               <p className="text-sm uppercase tracking-[0.4em] text-white/60">Portfolio</p>
               <h2 className="mt-3 text-3xl font-semibold md:text-4xl">Where imagination hit the market.</h2>
@@ -745,9 +744,9 @@ function MainSite() {
 
         <FAQSection />
 
-        <section id="contact" className="bg-night/80 py-24">
+        <section id="contact" className="py-24">
           <div className="mx-auto max-w-4xl px-6">
-            <div className="rounded-3xl border border-white/10 bg-plum/30 p-10 backdrop-blur">
+            <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
               <p className="text-sm uppercase tracking-[0.4em] text-white/60">Contact</p>
               <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Ready to build the thing everyone will pretend they believed in from day one?</h2>
               <form className="mt-8 grid gap-6 md:grid-cols-2">
@@ -812,7 +811,7 @@ function MainSite() {
           </div>
         </section>
 
-        <footer className="border-t border-white/10 bg-night py-12">
+        <footer className="border-t border-white/10 py-12">
           <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
             <p>If you made it this far, you’re one of us.</p>
             <a href="#pricing" className="inline-flex items-center rounded-full px-3 py-2 text-aurum transition-colors hover:bg-aurum hover:text-black">
