@@ -583,6 +583,46 @@ function Navigation() {
 }
 
 function MainSite() {
+  const [submissionStatus, setSubmissionStatus] = useState('idle');
+  const [submissionMessage, setSubmissionMessage] = useState('');
+
+  const handleContactSubmit = (event) => {
+    event.preventDefault();
+    setSubmissionStatus('sending');
+    setSubmissionMessage('');
+
+    const form = event.currentTarget;
+    const nameValue = document.getElementById('name')?.value ?? '';
+    const emailValue = document.getElementById('email')?.value ?? '';
+    const companyValue = document.getElementById('company')?.value ?? '';
+    const messageValue = document.getElementById('message')?.value ?? '';
+
+    fetch('https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Name: nameValue,
+        Email: emailValue,
+        Company: companyValue,
+        Message: messageValue
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setSubmissionStatus('success');
+        setSubmissionMessage('Transmission received. Expect a response within 48 hours.');
+        form.reset();
+      })
+      .catch((err) => {
+        console.error(err);
+        setSubmissionStatus('error');
+        setSubmissionMessage('Something glitched. Try again or email us directly.');
+      });
+  };
+
   return (
     <div className="relative z-10 text-white">
       <Navigation />
@@ -749,21 +789,23 @@ function MainSite() {
             <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
               <p className="text-sm uppercase tracking-[0.4em] text-white/60">Contact</p>
               <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Ready to build the thing everyone will pretend they believed in from day one?</h2>
-              <form className="mt-8 grid gap-6 md:grid-cols-2">
+              <form onSubmit={handleContactSubmit} className="mt-8 grid gap-6 md:grid-cols-2">
                 <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
                   Name
                   <input
                     type="text"
                     name="name"
+                    id="name"
                     placeholder="Your name"
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                  />
+                    />
                 </label>
                 <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
                   Email
                   <input
                     type="email"
                     name="email"
+                    id="email"
                     placeholder="you@company.com"
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
@@ -773,6 +815,7 @@ function MainSite() {
                   <input
                     type="text"
                     name="company"
+                    id="company"
                     placeholder="What are we building?"
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
@@ -781,6 +824,7 @@ function MainSite() {
                   Message
                   <textarea
                     name="message"
+                    id="message"
                     rows="4"
                     placeholder="Pitch us the dream. We’ll sharpen it."
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
@@ -788,12 +832,24 @@ function MainSite() {
                 </label>
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.03, backgroundColor: '#FFD347', color: '#000000' }}
+                  whileHover={submissionStatus === 'sending' ? {} : { scale: 1.03, backgroundColor: '#FFD347', color: '#000000' }}
                   whileTap={{ scale: 0.96 }}
-                  className="md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition-colors"
+                  disabled={submissionStatus === 'sending'}
+                  className={`md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] transition-colors ${
+                    submissionStatus === 'sending' ? 'cursor-not-allowed bg-black/40 text-white/50' : 'text-white'
+                  }`}
                 >
-                  Send Transmission
+                  {submissionStatus === 'sending' ? 'Sending…' : 'Send Transmission'}
                 </motion.button>
+                {submissionMessage && (
+                  <p
+                    className={`md:col-span-2 text-sm ${
+                      submissionStatus === 'error' ? 'text-scarlet' : 'text-aurum'
+                    }`}
+                  >
+                    {submissionMessage}
+                  </p>
+                )}
               </form>
               <div className="mt-8 flex flex-wrap gap-4 text-sm uppercase tracking-[0.3em] text-white/60">
                 {socialPlatforms.map((platform) => (
