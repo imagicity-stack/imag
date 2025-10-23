@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import DotGrid from './components/DotGrid';
@@ -139,6 +139,9 @@ const socialPlatforms = [
       </svg>
     ) }
 ];
+
+const CONTACT_ENDPOINT =
+  'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec';
 
 function TypewriterText({ text, delay = 0, className = '' }) {
   const [displayed, setDisplayed] = useState('');
@@ -586,60 +589,65 @@ function MainSite() {
   const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
 
-  useEffect(() => {
-    const formElement = document.querySelector("form");
-    if (!formElement) {
-      return undefined;
+  const handleContactSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    setSubmissionStatus('sending');
+    setSubmissionMessage('');
+
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const companyInput = document.getElementById('company');
+    const messageInput = document.getElementById('message');
+
+    if (!nameInput || !emailInput || !companyInput || !messageInput) {
+      setSubmissionStatus('error');
+      setSubmissionMessage('The contact form failed to initialize. Refresh and try again.');
+      return;
     }
 
-    const submitHandler = async (e) => {
-      e.preventDefault();
-      setSubmissionStatus('sending');
-      setSubmissionMessage('');
-
-      const nameValue = document.getElementById("name")?.value.trim() ?? '';
-      const emailValue = document.getElementById("email")?.value.trim() ?? '';
-      const companyValue = document.getElementById("company")?.value.trim() ?? '';
-      const messageValue = document.getElementById("message")?.value.trim() ?? '';
-
-      if (!nameValue || !emailValue || !companyValue || !messageValue) {
-        setSubmissionStatus('error');
-        setSubmissionMessage('All fields are required before we make contact.');
-        return;
-      }
-
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            Name: document.getElementById("name").value,
-            Email: document.getElementById("email").value,
-            Company: document.getElementById("company").value,
-            Message: document.getElementById("message").value
-          })
-        });
-        const result = await response.text();
-        console.log('Server response:', result);
-        setSubmissionStatus('success');
-        setSubmissionMessage(result || 'Transmission received. Expect a response within 48 hours.');
-        e.currentTarget.reset();
-      } catch (err) {
-        console.error('Submission failed:', err);
-        setSubmissionStatus('error');
-        setSubmissionMessage(
-          err instanceof Error
-            ? `Submission failed: ${err.message}`
-            : 'Submission failed: An unknown error disrupted the signal.'
-        );
-      }
+    const payload = {
+      Name: nameInput.value.trim(),
+      Email: emailInput.value.trim(),
+      Company: companyInput.value.trim(),
+      Message: messageInput.value.trim()
     };
 
-    document.querySelector("form").addEventListener("submit", submitHandler);
+    if (!payload.Name || !payload.Email || !payload.Company || !payload.Message) {
+      setSubmissionStatus('error');
+      setSubmissionMessage('All fields are required before we make contact.');
+      return;
+    }
 
-    return () => {
-      document.querySelector("form")?.removeEventListener("submit", submitHandler);
-    };
+    try {
+      const response = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const resultText = await response.text();
+      console.log('Server response:', resultText);
+
+      if (!response.ok) {
+        throw new Error(resultText || `Received HTTP ${response.status} from the submission endpoint.`);
+      }
+
+      setSubmissionStatus('success');
+      setSubmissionMessage(resultText || 'Transmission received. Expect a response within 48 hours.');
+      e.currentTarget.reset();
+    } catch (err) {
+      console.error('Submission failed:', err);
+      setSubmissionStatus('error');
+
+      const message =
+        err instanceof Error && err.message.includes('Failed to fetch')
+          ? 'We could not reach the Apps Script endpoint. Confirm the deployment is accessible to Anyone with the link and that your network allows the request.'
+          : err instanceof Error
+          ? err.message
+          : 'An unknown error disrupted the signal.';
+
+      setSubmissionMessage(`Submission failed: ${message}`);
+    }
   }, []);
 
   return (
@@ -808,7 +816,7 @@ function MainSite() {
             <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
               <p className="text-sm uppercase tracking-[0.4em] text-white/60">Contact</p>
               <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Ready to build the thing everyone will pretend they believed in from day one?</h2>
-              <form className="mt-8 grid gap-6 md:grid-cols-2">
+              <form className="mt-8 grid gap-6 md:grid-cols-2" onSubmit={handleContactSubmit}>
                 <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
                   Name
                   <input
