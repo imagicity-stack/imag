@@ -592,11 +592,21 @@ function MainSite() {
     setSubmissionMessage('');
 
     const form = event.currentTarget;
-    const formData = new FormData(form);
-    const nameValue = (formData.get('name') ?? '').toString().trim();
-    const emailValue = (formData.get('email') ?? '').toString().trim();
-    const companyValue = (formData.get('company') ?? '').toString().trim();
-    const messageValue = (formData.get('message') ?? '').toString().trim();
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const companyInput = document.getElementById('company');
+    const messageInput = document.getElementById('message');
+
+    const nameValue = nameInput?.value.trim() ?? '';
+    const emailValue = emailInput?.value.trim() ?? '';
+    const companyValue = companyInput?.value.trim() ?? '';
+    const messageValue = messageInput?.value.trim() ?? '';
+
+    if (!nameValue || !emailValue || !companyValue || !messageValue) {
+      setSubmissionStatus('error');
+      setSubmissionMessage('All fields are required before we make contact.');
+      return;
+    }
 
     const payload = {
       Name: nameValue,
@@ -605,17 +615,13 @@ function MainSite() {
       Message: messageValue
     };
 
-    const confirmSubmission = () => {
-      setSubmissionStatus('success');
-      setSubmissionMessage('Transmission received. Expect a response within 48 hours.');
-      form.reset();
-    };
-
     try {
+      console.log('Sending payload to Apps Script', payload);
       const response = await fetch(
         'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
         {
           method: 'POST',
+          mode: 'cors',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -629,7 +635,7 @@ function MainSite() {
         try {
           parsed = JSON.parse(rawText);
         } catch (parseError) {
-          parsed = undefined;
+          console.warn('Apps Script returned a non-JSON payload', rawText);
         }
       }
 
@@ -639,12 +645,31 @@ function MainSite() {
         throw new Error(errorMessage);
       }
 
+      const successFlag =
+        parsed && (parsed.result || parsed.status || parsed.success || parsed.message || parsed.Response || parsed.resp);
+
+      if (parsed && successFlag && typeof successFlag === 'string') {
+        const normalized = successFlag.toLowerCase();
+        if (normalized.includes('error') || normalized.includes('failed')) {
+          throw new Error(parsed.message || parsed.error || 'Apps Script reported a failure.');
+        }
+      }
+
+      setSubmissionStatus('success');
+      setSubmissionMessage(
+        (parsed && (parsed.message || parsed.result || parsed.status)) ||
+          'Transmission received. Expect a response within 48 hours.'
+      );
+      form.reset();
       console.log('Apps Script response', parsed ?? rawText);
-      confirmSubmission();
     } catch (error) {
       console.error('Submission failed', error);
       setSubmissionStatus('error');
-      setSubmissionMessage('Something glitched. Try again or email us directly.');
+      setSubmissionMessage(
+        error instanceof Error
+          ? `Submission failed: ${error.message}`
+          : 'Submission failed: An unknown error disrupted the signal.'
+      );
     }
   };
 
