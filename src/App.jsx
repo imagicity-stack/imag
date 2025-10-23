@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
+import DotGrid from './components/DotGrid';
+
 const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
 
 const portfolioFilters = ['all', 'tech', 'retail', 'education', 'lifestyle'];
@@ -96,9 +98,9 @@ const entrySteps = [
 ];
 
 const glitchFrames = [
-  'drop-shadow(0 0 12px rgba(209, 0, 71, 0.6))',
-  'drop-shadow(0 0 18px rgba(209, 0, 71, 0.8))',
-  'drop-shadow(0 0 24px rgba(244, 222, 114, 0.4))'
+  'drop-shadow(0 0 12px rgba(165, 0, 0, 0.65))',
+  'drop-shadow(0 0 18px rgba(165, 0, 0, 0.85))',
+  'drop-shadow(0 0 24px rgba(255, 211, 71, 0.5))'
 ];
 
 const navLinks = [
@@ -159,24 +161,21 @@ function TypewriterText({ text, delay = 0, className = '' }) {
   return <span className={`tracking-tight ${className}`}>{displayed}</span>;
 }
 
-function AnimatedBackdrop() {
+function DotBackdrop() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-night">
-      <motion.div
-        className="absolute -inset-40 opacity-60 blur-3xl"
-        animate={{ backgroundPosition: ['0% 0%', '100% 50%', '0% 0%'] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        style={{
-          backgroundImage:
-            'linear-gradient(135deg, rgba(108,29,83,0.35) 0%, rgba(209,0,71,0.45) 50%, rgba(244,222,114,0.25) 100%)',
-          backgroundSize: '200% 200%'
-        }}
-      />
-      <motion.div
-        className="absolute -bottom-40 left-1/2 h-[60vh] w-[60vh] -translate-x-1/2 rounded-full opacity-40 blur-[120px]"
-        animate={{ scale: [1, 1.1, 0.95, 1] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ background: 'radial-gradient(circle, rgba(244,222,114,0.35), transparent 65%)' }}
+    <div className="pointer-events-none fixed inset-0 -z-10 bg-black">
+      <DotGrid
+        className="h-full w-full"
+        style={{ width: '100%', height: '100%' }}
+        dotSize={10}
+        gap={20}
+        baseColor="#A50000"
+        activeColor="#FFD347"
+        proximity={150}
+        shockRadius={240}
+        shockStrength={6}
+        resistance={900}
+        returnDuration={1.4}
       />
     </div>
   );
@@ -217,8 +216,7 @@ function EntryGate({ onComplete }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-night text-white">
-      <AnimatedBackdrop />
+    <div className="relative min-h-screen w-full overflow-hidden text-white">
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center">
         <AnimatePresence mode="wait">
           {stepIndex === 0 && (
@@ -241,8 +239,8 @@ function EntryGate({ onComplete }) {
               {showSecondLine && (
                 <motion.button
                   onClick={() => setStepIndex(1)}
-                  className="mt-6 rounded-full border border-scarlet px-6 py-3 text-sm uppercase tracking-[0.3em] text-white/80 transition"
-                  whileHover={{ backgroundColor: '#D10047', color: '#1E2A55', scale: 1.05 }}
+                  className="mt-6 rounded-full border border-scarlet px-6 py-3 text-sm uppercase tracking-[0.3em] text-white/80 transition-colors"
+                  whileHover={{ backgroundColor: '#FFD347', color: '#000000', scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
                 >
                   Continue
@@ -268,8 +266,8 @@ function EntryGate({ onComplete }) {
                   <motion.button
                     key={option.value}
                     onClick={() => handleOptionClick(option.value)}
-                    className="w-full max-w-md rounded-full border border-white/20 px-6 py-4 text-lg font-medium text-white/80 transition hover:border-scarlet hover:text-white"
-                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(209,0,71,0.18)' }}
+                    className="w-full max-w-md rounded-full border border-white/20 px-6 py-4 text-lg font-medium text-white/80 transition-colors hover:border-aurum"
+                    whileHover={{ scale: 1.02, backgroundColor: '#FFD347', color: '#000000' }}
                     whileTap={{ scale: 0.97 }}
                   >
                     {option.label}
@@ -305,14 +303,14 @@ function EntryGate({ onComplete }) {
               <p className="text-3xl font-semibold md:text-5xl">Now enter the city where brands are imagined.</p>
               <motion.button
                 onClick={handleEnter}
-                className="relative overflow-hidden rounded-full border border-scarlet px-8 py-4 text-lg font-semibold uppercase tracking-[0.3em]"
+                className="relative overflow-hidden rounded-full border border-scarlet px-8 py-4 text-lg font-semibold uppercase tracking-[0.3em] transition-colors"
                 animate={
                   glitching
                     ? { filter: glitchFrames, scale: [1, 1.04, 0.98, 1.02, 1] }
                     : { filter: 'drop-shadow(0 0 0 rgba(0,0,0,0))', scale: 1 }
                 }
                 transition={{ duration: glitching ? 0.6 : 0.3, repeat: glitching ? Infinity : 0, repeatType: 'mirror' }}
-                whileHover={{ backgroundColor: '#D10047', color: '#1E2A55', scale: 1.05 }}
+                whileHover={{ backgroundColor: '#FFD347', color: '#000000', scale: 1.05 }}
               >
                 Enter IMAGICITY
               </motion.button>
@@ -372,16 +370,16 @@ function FAQItem({ item, index }) {
   const [open, setOpen] = useState(index < 2);
 
   return (
-    <div className="border-b border-white/10 py-4">
+    <div className="group border-b border-white/10 py-4">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between text-left text-lg font-semibold text-white"
+        className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-lg font-semibold text-white transition-colors hover:bg-aurum hover:text-black"
       >
         <span>{item.q}</span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.25 }}
-          className="text-aurum"
+          className="text-aurum transition-colors group-hover:text-black"
         >
           +
         </motion.span>
@@ -412,10 +410,10 @@ function FAQSection() {
       <div className="rounded-3xl border border-white/10 bg-night/60 p-10 backdrop-blur">
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className="flex w-full items-center justify-between text-left text-sm uppercase tracking-[0.35em] text-white/70"
+          className="group flex w-full items-center justify-between rounded-full px-4 py-2 text-left text-sm uppercase tracking-[0.35em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
         >
           <span>Faq — the answers you asked for (and some you didn’t)</span>
-          <motion.span animate={{ rotate: open ? 0 : -90 }} transition={{ duration: 0.3 }} className="text-aurum">
+          <motion.span animate={{ rotate: open ? 0 : -90 }} transition={{ duration: 0.3 }} className="text-aurum transition-colors group-hover:text-black">
             ⇲
           </motion.span>
         </button>
@@ -453,9 +451,9 @@ function PricingModal() {
     <div className="mt-8 space-y-4">
       <motion.button
         onClick={handleOpen}
-        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.96 }}
-        className="rounded-full border border-white/20 px-6 py-3 text-xs uppercase tracking-[0.35em] text-white/80 transition hover:border-scarlet hover:text-white"
+        className="rounded-full border border-white/20 px-6 py-3 text-xs uppercase tracking-[0.35em] text-white/80 transition-colors hover:border-aurum"
+        whileHover={{ scale: 1.05, backgroundColor: '#FFD347', color: '#000000' }}
       >
         Ask About Pricing
       </motion.button>
@@ -466,7 +464,7 @@ function PricingModal() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="mx-auto max-w-md rounded-2xl border border-white/10 bg-plum/30 p-6 text-left shadow-lg"
+            className="mx-auto max-w-md rounded-2xl border border-white/10 bg-plum/50 p-6 text-left shadow-lg"
           >
             <p className="text-lg font-semibold text-aurum">Bugger, pricing already? Let’s talk first.</p>
             <p className="mt-4 text-sm text-white/70">
@@ -474,7 +472,7 @@ function PricingModal() {
             </p>
             <button
               onClick={() => setOpen(false)}
-              className="mt-6 text-xs uppercase tracking-[0.4em] text-white/60 transition hover:text-white"
+              className="mt-6 rounded-full px-4 py-2 text-xs uppercase tracking-[0.4em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
             >
               Close
             </button>
@@ -482,9 +480,9 @@ function PricingModal() {
         )}
       </AnimatePresence>
       {revealed && (
-        <div className="text-sm text-white/70">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
           Still curious?{' '}
-          <a href="#" className="text-aurum underline-offset-4 transition hover:underline">
+          <a href="#" className="rounded-full px-3 py-1 text-aurum transition-colors hover:bg-aurum hover:text-black">
             Download PDF price list
           </a>
         </div>
@@ -506,9 +504,9 @@ function Navigation() {
   const handleNavClick = () => setOpen(false);
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-30 bg-night/80 backdrop-blur-xl">
+    <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#hero" className="text-sm font-semibold uppercase tracking-[0.4em] text-aurum">
+        <a href="#hero" className="text-sm font-semibold uppercase tracking-[0.4em] text-aurum transition-colors hover:text-white">
           Imagicity
         </a>
         <div className="hidden items-center gap-8 md:flex">
@@ -516,14 +514,14 @@ function Navigation() {
             <a
               key={link.href}
               href={link.href}
-              className="text-xs uppercase tracking-[0.35em] text-white/70 transition hover:text-aurum"
+              className="rounded-full px-4 py-2 text-xs uppercase tracking-[0.35em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
             >
               {link.label}
             </a>
           ))}
           <a
             href="#contact"
-            className="rounded-full border border-scarlet px-5 py-2 text-xs uppercase tracking-[0.35em] text-white transition hover:bg-scarlet hover:text-night"
+            className="rounded-full border border-scarlet px-5 py-2 text-xs uppercase tracking-[0.35em] text-white transition-colors hover:bg-aurum hover:text-black"
           >
             Engage
           </a>
@@ -531,11 +529,11 @@ function Navigation() {
         <button
           type="button"
           onClick={() => setOpen((prev) => !prev)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-white/20 text-white md:hidden"
+          className="group flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-white/20 text-white transition-colors hover:bg-aurum hover:text-black md:hidden"
         >
-          <span className="h-0.5 w-6 bg-white" />
-          <span className="h-0.5 w-6 bg-white" />
-          <span className="h-0.5 w-6 bg-white" />
+          <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
+          <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
+          <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
         </button>
       </div>
       <AnimatePresence>
@@ -550,7 +548,7 @@ function Navigation() {
             <div className="flex justify-end">
               <button
                 onClick={() => setOpen(false)}
-                className="text-sm uppercase tracking-[0.3em] text-white/70"
+                className="rounded-full px-3 py-1 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
               >
                 Close
               </button>
@@ -561,7 +559,7 @@ function Navigation() {
                   key={link.href}
                   href={link.href}
                   onClick={handleNavClick}
-                  className="text-sm uppercase tracking-[0.4em] text-white transition hover:text-aurum"
+                  className="rounded-full px-4 py-2 text-sm uppercase tracking-[0.4em] text-white transition-colors hover:bg-aurum hover:text-black"
                 >
                   {link.label}
                 </a>
@@ -569,7 +567,7 @@ function Navigation() {
               <a
                 href="#contact"
                 onClick={handleNavClick}
-                className="rounded-full border border-aurum px-5 py-2 text-xs uppercase tracking-[0.35em] text-aurum"
+                className="rounded-full border border-aurum px-5 py-2 text-xs uppercase tracking-[0.35em] text-aurum transition-colors hover:bg-aurum hover:text-black"
               >
                 Engage
               </a>
@@ -589,12 +587,10 @@ function MainSite() {
   );
 
   return (
-    <div className="relative bg-night text-white">
-      <AnimatedBackdrop />
+    <div className="relative text-white">
       <Navigation />
       <div className="relative z-10">
         <header id="hero" className="relative overflow-hidden pt-24">
-          <div className="absolute inset-0 bg-city-glow opacity-70" />
           <div className="relative mx-auto flex min-h-[90vh] max-w-6xl flex-col justify-center gap-10 px-6 py-24">
             <motion.p
               initial={{ opacity: 0, y: 10 }}
@@ -623,11 +619,10 @@ function MainSite() {
             </motion.p>
             <motion.a
               href="#contact"
-              whileHover={{ scale: 1.05, backgroundColor: 'rgba(209,0,71,0.2)', color: '#fff' }}
+              whileHover={{ scale: 1.05, backgroundColor: '#FFD347', color: '#000000' }}
               whileTap={{ scale: 0.96 }}
-              className="group relative w-fit overflow-hidden rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition"
+              className="relative w-fit overflow-hidden rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition-colors"
             >
-              <span className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(209,0,71,0.25),rgba(30,42,85,0.8))] opacity-0 transition group-hover:opacity-100" />
               Let’s Build Together
             </motion.a>
           </div>
@@ -641,7 +636,7 @@ function MainSite() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(244,222,114,0.35),transparent_70%)] opacity-40" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,211,71,0.3),transparent_70%)] opacity-40" />
             <video
               className="relative z-10 h-full w-full object-cover"
               autoPlay
@@ -727,10 +722,10 @@ function MainSite() {
                     onClick={() => setFilter(item)}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className={`rounded-full border px-5 py-2 text-xs uppercase tracking-[0.3em] transition ${
+                    className={`rounded-full border px-5 py-2 text-xs uppercase tracking-[0.3em] transition-colors ${
                       filter === item
-                        ? 'border-scarlet bg-scarlet text-night'
-                        : 'border-white/20 text-white/70 hover:border-aurum hover:text-aurum'
+                        ? 'border-scarlet bg-scarlet text-black'
+                        : 'border-white/20 text-white/70 hover:border-aurum hover:bg-aurum hover:text-black'
                     }`}
                   >
                     {item}
@@ -756,7 +751,7 @@ function MainSite() {
                       <h3 className="mt-2 text-2xl font-semibold">{item.title}</h3>
                       <p className="mt-2 text-sm text-white/70">{item.description}</p>
                     </div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-scarlet/90 text-night opacity-0 transition-opacity duration-300 group-hover:opacity-90">
+                    <div className="absolute inset-0 flex items-center justify-center bg-aurum/90 text-black opacity-0 transition-opacity duration-300 group-hover:opacity-90">
                       <p className="text-lg font-semibold uppercase tracking-[0.4em]">View Case</p>
                     </div>
                   </motion.div>
@@ -780,7 +775,7 @@ function MainSite() {
                     type="text"
                     name="name"
                     placeholder="Your name"
-                    className="rounded-lg border border-white/15 bg-night/70 px-4 py-3 text-base text-white focus:border-scarlet focus:outline-none"
+                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
                 </label>
                 <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
@@ -789,7 +784,7 @@ function MainSite() {
                     type="email"
                     name="email"
                     placeholder="you@company.com"
-                    className="rounded-lg border border-white/15 bg-night/70 px-4 py-3 text-base text-white focus:border-scarlet focus:outline-none"
+                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
                 </label>
                 <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
@@ -798,7 +793,7 @@ function MainSite() {
                     type="text"
                     name="company"
                     placeholder="What are we building?"
-                    className="rounded-lg border border-white/15 bg-night/70 px-4 py-3 text-base text-white focus:border-scarlet focus:outline-none"
+                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
                 </label>
                 <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
@@ -807,14 +802,14 @@ function MainSite() {
                     name="message"
                     rows="4"
                     placeholder="Pitch us the dream. We’ll sharpen it."
-                    className="rounded-lg border border-white/15 bg-night/70 px-4 py-3 text-base text-white focus:border-scarlet focus:outline-none"
+                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
                 </label>
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.03 }}
+                  whileHover={{ scale: 1.03, backgroundColor: '#FFD347', color: '#000000' }}
                   whileTap={{ scale: 0.96 }}
-                  className="md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition hover:bg-scarlet hover:text-night"
+                  className="md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition-colors"
                 >
                   Send Transmission
                 </motion.button>
@@ -824,7 +819,7 @@ function MainSite() {
                   <a
                     key={platform.name}
                     href={platform.href}
-                    className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition hover:border-aurum hover:text-aurum"
+                    className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
                   >
                     {platform.icon({ className: 'h-4 w-4' })}
                     <span className="sr-only">{platform.name}</span>
@@ -838,7 +833,7 @@ function MainSite() {
         <footer className="border-t border-white/10 bg-night py-12">
           <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
             <p>If you made it this far, you’re one of us.</p>
-            <a href="#pricing" className="text-aurum transition hover:text-white">
+            <a href="#pricing" className="inline-flex items-center rounded-full px-3 py-2 text-aurum transition-colors hover:bg-aurum hover:text-black">
               Still looking for a price list? Fine. Click here.
             </a>
           </div>
@@ -852,7 +847,8 @@ export default function App() {
   const [entered, setEntered] = useState(false);
 
   return (
-    <div className="min-h-screen bg-night text-white">
+    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+      <DotBackdrop />
       <AnimatePresence mode="wait">
         {!entered ? <EntryGate key="entry" onComplete={() => setEntered(true)} /> : <MainSite key="main" />}
       </AnimatePresence>
