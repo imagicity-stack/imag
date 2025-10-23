@@ -586,7 +586,7 @@ function MainSite() {
   const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
 
-  const handleContactSubmit = async (event) => {
+  const handleContactSubmit = (event) => {
     event.preventDefault();
     setSubmissionStatus('sending');
     setSubmissionMessage('');
@@ -615,59 +615,37 @@ function MainSite() {
       Message: messageValue
     };
 
-    try {
-      console.log('Sending payload to Apps Script', payload);
-      const response = await fetch(
-        'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }
-      );
+    console.log('Sending payload to Apps Script', payload);
 
-      const rawText = await response.text();
-      let parsed;
-      if (rawText) {
-        try {
-          parsed = JSON.parse(rawText);
-        } catch (parseError) {
-          console.warn('Apps Script returned a non-JSON payload', rawText);
-        }
+    fetch(
+      'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Name: document.getElementById('name').value,
+          Email: document.getElementById('email').value,
+          Company: document.getElementById('company').value,
+          Message: document.getElementById('message').value
+        })
       }
-
-      if (!response.ok) {
-        const errorMessage =
-          (parsed && (parsed.error || parsed.message)) || rawText || `Request failed with status ${response.status}`;
-        throw new Error(errorMessage);
-      }
-
-      const successFlag =
-        parsed && (parsed.result || parsed.status || parsed.success || parsed.message || parsed.Response || parsed.resp);
-
-      if (parsed && successFlag && typeof successFlag === 'string') {
-        const normalized = successFlag.toLowerCase();
-        if (normalized.includes('error') || normalized.includes('failed')) {
-          throw new Error(parsed.message || parsed.error || 'Apps Script reported a failure.');
-        }
-      }
-
-      setSubmissionStatus('success');
-      setSubmissionMessage(
-        (parsed && (parsed.message || parsed.result || parsed.status)) ||
-          'Transmission received. Expect a response within 48 hours.'
-      );
-      form.reset();
-      console.log('Apps Script response', parsed ?? rawText);
-    } catch (error) {
-      console.error('Submission failed', error);
-      setSubmissionStatus('error');
-      setSubmissionMessage(
-        error instanceof Error
-          ? `Submission failed: ${error.message}`
-          : 'Submission failed: An unknown error disrupted the signal.'
-      );
-    }
+    )
+      .then((res) => res.text())
+      .then((data) => {
+        console.log('Server response:', data);
+        setSubmissionStatus('success');
+        setSubmissionMessage(data || 'Transmission received. Expect a response within 48 hours.');
+        form.reset();
+      })
+      .catch((err) => {
+        console.error('Fetch error:', err);
+        setSubmissionStatus('error');
+        setSubmissionMessage(
+          err instanceof Error
+            ? `Submission failed: ${err.message}`
+            : 'Submission failed: An unknown error disrupted the signal.'
+        );
+      });
   };
 
   return (
