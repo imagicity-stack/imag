@@ -141,7 +141,7 @@ const socialPlatforms = [
 ];
 
 const CONTACT_ENDPOINT =
-  'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec';
+  'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec';
 
 function TypewriterText({ text, delay = 0, className = '' }) {
   const [displayed, setDisplayed] = useState('');
