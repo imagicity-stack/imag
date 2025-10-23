@@ -606,13 +606,13 @@ function MainSite() {
     }
 
     const payload = {
-      Name: nameInput.value.trim(),
-      Email: emailInput.value.trim(),
-      Company: companyInput.value.trim(),
-      Message: messageInput.value.trim()
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      company: companyInput.value.trim(),
+      message: messageInput.value.trim()
     };
 
-    if (!payload.Name || !payload.Email || !payload.Company || !payload.Message) {
+    if (!payload.name || !payload.email || !payload.company || !payload.message) {
       setSubmissionStatus('error');
       setSubmissionMessage('All fields are required before we make contact.');
       return;
@@ -621,7 +621,6 @@ function MainSite() {
     try {
       const response = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
-        mode: 'cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
