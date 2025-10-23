@@ -1,42 +1,46 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import DotGrid from './components/DotGrid';
 
 const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
 
-const portfolioFilters = ['all', 'tech', 'retail', 'education', 'lifestyle'];
-
 const portfolioItems = [
   {
     title: 'NeuroPulse Labs',
-    category: 'tech',
-    description: 'AI-driven health diagnostics reimagined as a cultural movement.'
+    description: 'AI-driven health diagnostics reimagined as a cultural movement.',
+    image:
+      'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80'
   },
   {
     title: 'Velvet Alley',
-    category: 'retail',
-    description: 'Luxury streetwear that bleeds rebellion into every seam.'
+    description: 'Luxury streetwear that bleeds rebellion into every seam.',
+    image:
+      'https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=900&q=80'
   },
   {
     title: 'MindSpring Academy',
-    category: 'education',
-    description: 'A digital campus launch that made learning feel like a premiere night.'
+    description: 'A digital campus launch that made learning feel like a premiere night.',
+    image:
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
   },
   {
     title: 'PulseFuel',
-    category: 'lifestyle',
-    description: 'Clean energy drinks with a cult-worthy identity and launch playbook.'
+    description: 'Clean energy drinks with a cult-worthy identity and launch playbook.',
+    image:
+      'https://images.unsplash.com/photo-1453227588063-bb302b62f50b?auto=format&fit=crop&w=900&q=80'
   },
   {
     title: 'Circuit Society',
-    category: 'tech',
-    description: 'From stealth startup to spotlight darling in six incendiary weeks.'
+    description: 'From stealth startup to spotlight darling in six incendiary weeks.',
+    image:
+      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80'
   },
   {
     title: 'Bloom District',
-    category: 'retail',
-    description: 'Repositioned a boutique chain into a modern ritual for self-expression.'
+    description: 'Repositioned a boutique chain into a modern ritual for self-expression.',
+    image:
+      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80'
   }
 ];
 
@@ -163,7 +167,7 @@ function TypewriterText({ text, delay = 0, className = '' }) {
 
 function DotBackdrop() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 bg-black">
+    <div className="pointer-events-none fixed inset-0 z-0 bg-black">
       <DotGrid
         className="h-full w-full"
         style={{ width: '100%', height: '100%' }}
@@ -216,7 +220,7 @@ function EntryGate({ onComplete }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden text-white">
+    <div className="relative z-10 min-h-screen w-full overflow-hidden text-white">
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center">
         <AnimatePresence mode="wait">
           {stepIndex === 0 && (
@@ -580,14 +584,8 @@ function Navigation() {
 }
 
 function MainSite() {
-  const [filter, setFilter] = useState('all');
-  const filteredPortfolio = useMemo(
-    () => portfolioItems.filter((item) => filter === 'all' || item.category === filter),
-    [filter]
-  );
-
   return (
-    <div className="relative text-white">
+    <div className="relative z-10 text-white">
       <Navigation />
       <div className="relative z-10">
         <header id="hero" className="relative overflow-hidden pt-24">
@@ -710,53 +708,37 @@ function MainSite() {
 
         <section id="portfolio" className="mx-auto max-w-6xl px-6 py-24">
           <div className="rounded-3xl border border-white/10 bg-night/60 p-10 backdrop-blur">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-[0.4em] text-white/60">Portfolio</p>
-                <h2 className="mt-3 text-3xl font-semibold md:text-4xl">Where imagination hit the market.</h2>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {portfolioFilters.map((item) => (
-                  <motion.button
-                    key={item}
-                    onClick={() => setFilter(item)}
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    className={`rounded-full border px-5 py-2 text-xs uppercase tracking-[0.3em] transition-colors ${
-                      filter === item
-                        ? 'border-scarlet bg-scarlet text-black'
-                        : 'border-white/20 text-white/70 hover:border-aurum hover:bg-aurum hover:text-black'
-                    }`}
-                  >
-                    {item}
-                  </motion.button>
-                ))}
-              </div>
+            <div className="max-w-2xl">
+              <p className="text-sm uppercase tracking-[0.4em] text-white/60">Portfolio</p>
+              <h2 className="mt-3 text-3xl font-semibold md:text-4xl">Where imagination hit the market.</h2>
+              <p className="mt-4 text-sm text-white/60">
+                No filters, no fluff—just a taste of the builds that lit up their sectors.
+              </p>
             </div>
-            <motion.div layout className="mt-10 grid gap-6 md:grid-cols-2">
-              <AnimatePresence>
-                {filteredPortfolio.map((item) => (
-                  <motion.div
-                    layout
-                    key={item.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.4 }}
-                    className="group relative overflow-hidden rounded-3xl border border-white/10 bg-plum/30"
-                  >
-                    <div className="aspect-video bg-[url('https://images.unsplash.com/photo-1483478550801-ceba5fe50e8e?auto=format&fit=crop&w=1100&q=80')] bg-cover bg-center" />
-                    <div className="p-6">
-                      <p className="text-sm uppercase tracking-[0.35em] text-white/60">{item.category}</p>
-                      <h3 className="mt-2 text-2xl font-semibold">{item.title}</h3>
-                      <p className="mt-2 text-sm text-white/70">{item.description}</p>
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-aurum/90 text-black opacity-0 transition-opacity duration-300 group-hover:opacity-90">
-                      <p className="text-lg font-semibold uppercase tracking-[0.4em]">View Case</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+            <motion.div layout className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {portfolioItems.map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.4, delay: index * 0.04 }}
+                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-plum/40"
+                >
+                  <div
+                    className="aspect-square w-full bg-cover bg-center opacity-80 transition-opacity duration-300 group-hover:opacity-60"
+                    style={{ backgroundImage: `url(${item.image})` }}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 space-y-2 bg-gradient-to-t from-black/85 via-black/60 to-transparent p-4">
+                    <h3 className="text-lg font-semibold">{item.title}</h3>
+                    <p className="text-xs text-white/70">{item.description}</p>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-aurum/90 text-black opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <p className="text-xs font-semibold uppercase tracking-[0.4em]">View Case</p>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </section>
@@ -847,7 +829,7 @@ export default function App() {
   const [entered, setEntered] = useState(false);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-hidden text-white">
       <DotBackdrop />
       <AnimatePresence mode="wait">
         {!entered ? <EntryGate key="entry" onComplete={() => setEntered(true)} /> : <MainSite key="main" />}

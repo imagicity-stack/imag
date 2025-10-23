@@ -11,8 +11,7 @@ export default {
         aurum: '#FFD347'
       },
       fontFamily: {
-        grotesk: ['"Space Grotesk"', 'sans-serif'],
-        monument: ['"Monument Extended"', 'sans-serif']
+        sans: ['"Work Sans"', 'sans-serif']
       },
       backgroundImage: {}
     }
