@@ -592,10 +592,10 @@ function MainSite() {
     setSubmissionMessage('');
 
     const form = event.currentTarget;
-    const nameInput = document.getElementById('Name');
-    const emailInput = document.getElementById('Email');
-    const companyInput = document.getElementById('Company');
-    const messageInput = document.getElementById('Message');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const companyInput = document.getElementById('company');
+    const messageInput = document.getElementById('message');
 
     const nameValue = nameInput?.value.trim() ?? '';
     const emailValue = emailInput?.value.trim() ?? '';
@@ -609,10 +609,10 @@ function MainSite() {
     }
 
     const payload = {
-      fullName: nameValue,
-      emailId: emailValue,
-      company: companyValue,
-      message: messageValue
+      Name: nameValue,
+      Email: emailValue,
+      Company: companyValue,
+      Message: messageValue
     };
 
     try {
@@ -621,7 +621,7 @@ function MainSite() {
         'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         }
       );
@@ -841,8 +841,8 @@ function MainSite() {
                   Name
                   <input
                     type="text"
-                    name="Name"
-                    id="Name"
+                    name="name"
+                    id="name"
                     placeholder="Your name"
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                     />
@@ -851,8 +851,8 @@ function MainSite() {
                   Email
                   <input
                     type="email"
-                    name="Email"
-                    id="Email"
+                    name="email"
+                    id="email"
                     placeholder="you@company.com"
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
@@ -861,8 +861,8 @@ function MainSite() {
                   Company
                   <input
                     type="text"
-                    name="Company"
-                    id="Company"
+                    name="company"
+                    id="company"
                     placeholder="What are we building?"
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                   />
@@ -870,8 +870,8 @@ function MainSite() {
                 <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
                   Message
                   <textarea
-                    name="Message"
-                    id="Message"
+                    name="message"
+                    id="message"
                     rows="4"
                     placeholder="Pitch us the dream. We’ll sharpen it."
                     className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
