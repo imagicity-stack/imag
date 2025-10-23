@@ -586,7 +586,7 @@ function MainSite() {
   const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
 
-  const handleContactSubmit = (event) => {
+  const handleContactSubmit = async (event) => {
     event.preventDefault();
     setSubmissionStatus('sending');
     setSubmissionMessage('');
@@ -597,30 +597,77 @@ function MainSite() {
     const companyValue = document.getElementById('company')?.value ?? '';
     const messageValue = document.getElementById('message')?.value ?? '';
 
-    fetch('https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        Name: nameValue,
-        Email: emailValue,
-        Company: companyValue,
-        Message: messageValue
-      })
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const payload = {
+      Name: nameValue,
+      Email: emailValue,
+      Company: companyValue,
+      Message: messageValue
+    };
+
+    const confirmSubmission = () => {
+      setSubmissionStatus('success');
+      setSubmissionMessage('Transmission received. Expect a response within 48 hours.');
+      form.reset();
+    };
+
+    try {
+      const response = await fetch(
+        'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (response.type === 'opaque') {
+        console.log('Opaque response received from Apps Script.');
+        confirmSubmission();
+        return;
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Request failed with status ${response.status}`);
+      }
+
+      const contentType = response.headers.get('content-type') ?? '';
+      if (contentType.includes('application/json')) {
+        const data = await response.json();
         console.log(data);
-        setSubmissionStatus('success');
-        setSubmissionMessage('Transmission received. Expect a response within 48 hours.');
-        form.reset();
-      })
-      .catch((err) => {
-        console.error(err);
+      } else {
+        const text = await response.text();
+        if (text) {
+          try {
+            const parsed = JSON.parse(text);
+            console.log(parsed);
+          } catch (parseError) {
+            console.log(text);
+          }
+        }
+      }
+
+      confirmSubmission();
+    } catch (primaryError) {
+      console.error('Primary submission failed', primaryError);
+      try {
+        await fetch(
+          'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
+          {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
+          }
+        );
+        confirmSubmission();
+      } catch (fallbackError) {
+        console.error('Fallback submission failed', fallbackError);
         setSubmissionStatus('error');
         setSubmissionMessage('Something glitched. Try again or email us directly.');
-      });
+      }
+    }
   };
 
   return (
