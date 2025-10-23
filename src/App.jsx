@@ -621,8 +621,13 @@ function MainSite() {
     try {
       const response = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          Name: document.getElementById('name').value,
+          Email: document.getElementById('email').value,
+          Company: document.getElementById('company').value,
+          Message: document.getElementById('message').value
+        })
       });
 
       const resultText = await response.text();
