@@ -621,20 +621,20 @@ function MainSite() {
     try {
       const response = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
+        mode: 'cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          Name: document.getElementById('name').value,
-          Email: document.getElementById('email').value,
-          Company: document.getElementById('company').value,
-          Message: document.getElementById('message').value
-        })
+        body: JSON.stringify(payload)
       });
 
       const resultText = await response.text();
       console.log('Server response:', resultText);
 
       if (!response.ok) {
-        throw new Error(resultText || `Received HTTP ${response.status} from the submission endpoint.`);
+        const statusMessage =
+          response.status === 403
+            ? 'The Apps Script returned HTTP 403. Ensure the deployment access level is set to "Anyone with the link".'
+            : `Received HTTP ${response.status} from the submission endpoint.`;
+        throw new Error(resultText || statusMessage);
       }
 
       setSubmissionStatus('success');
