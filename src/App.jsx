@@ -592,10 +592,11 @@ function MainSite() {
     setSubmissionMessage('');
 
     const form = event.currentTarget;
-    const nameValue = document.getElementById('name')?.value ?? '';
-    const emailValue = document.getElementById('email')?.value ?? '';
-    const companyValue = document.getElementById('company')?.value ?? '';
-    const messageValue = document.getElementById('message')?.value ?? '';
+    const formData = new FormData(form);
+    const nameValue = (formData.get('name') ?? '').toString().trim();
+    const emailValue = (formData.get('email') ?? '').toString().trim();
+    const companyValue = (formData.get('company') ?? '').toString().trim();
+    const messageValue = (formData.get('message') ?? '').toString().trim();
 
     const payload = {
       Name: nameValue,
@@ -622,51 +623,28 @@ function MainSite() {
         }
       );
 
-      if (response.type === 'opaque') {
-        console.log('Opaque response received from Apps Script.');
-        confirmSubmission();
-        return;
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `Request failed with status ${response.status}`);
-      }
-
-      const contentType = response.headers.get('content-type') ?? '';
-      if (contentType.includes('application/json')) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        const text = await response.text();
-        if (text) {
-          try {
-            const parsed = JSON.parse(text);
-            console.log(parsed);
-          } catch (parseError) {
-            console.log(text);
-          }
+      const rawText = await response.text();
+      let parsed;
+      if (rawText) {
+        try {
+          parsed = JSON.parse(rawText);
+        } catch (parseError) {
+          parsed = undefined;
         }
       }
 
-      confirmSubmission();
-    } catch (primaryError) {
-      console.error('Primary submission failed', primaryError);
-      try {
-        await fetch(
-          'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
-          {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(payload)
-          }
-        );
-        confirmSubmission();
-      } catch (fallbackError) {
-        console.error('Fallback submission failed', fallbackError);
-        setSubmissionStatus('error');
-        setSubmissionMessage('Something glitched. Try again or email us directly.');
+      if (!response.ok) {
+        const errorMessage =
+          (parsed && (parsed.error || parsed.message)) || rawText || `Request failed with status ${response.status}`;
+        throw new Error(errorMessage);
       }
+
+      console.log('Apps Script response', parsed ?? rawText);
+      confirmSubmission();
+    } catch (error) {
+      console.error('Submission failed', error);
+      setSubmissionStatus('error');
+      setSubmissionMessage('Something glitched. Try again or email us directly.');
     }
   };
 
