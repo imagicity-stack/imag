@@ -586,67 +586,61 @@ function MainSite() {
   const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
 
-  const handleContactSubmit = (event) => {
-    event.preventDefault();
-    setSubmissionStatus('sending');
-    setSubmissionMessage('');
-
-    const form = event.currentTarget;
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const companyInput = document.getElementById('company');
-    const messageInput = document.getElementById('message');
-
-    const nameValue = nameInput?.value.trim() ?? '';
-    const emailValue = emailInput?.value.trim() ?? '';
-    const companyValue = companyInput?.value.trim() ?? '';
-    const messageValue = messageInput?.value.trim() ?? '';
-
-    if (!nameValue || !emailValue || !companyValue || !messageValue) {
-      setSubmissionStatus('error');
-      setSubmissionMessage('All fields are required before we make contact.');
-      return;
+  useEffect(() => {
+    const formElement = document.querySelector("form");
+    if (!formElement) {
+      return undefined;
     }
 
-    const payload = {
-      Name: nameValue,
-      Email: emailValue,
-      Company: companyValue,
-      Message: messageValue
-    };
+    const submitHandler = async (e) => {
+      e.preventDefault();
+      setSubmissionStatus('sending');
+      setSubmissionMessage('');
 
-    console.log('Sending payload to Apps Script', payload);
+      const nameValue = document.getElementById("name")?.value.trim() ?? '';
+      const emailValue = document.getElementById("email")?.value.trim() ?? '';
+      const companyValue = document.getElementById("company")?.value.trim() ?? '';
+      const messageValue = document.getElementById("message")?.value.trim() ?? '';
 
-    fetch(
-      'https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          Name: document.getElementById('name').value,
-          Email: document.getElementById('email').value,
-          Company: document.getElementById('company').value,
-          Message: document.getElementById('message').value
-        })
+      if (!nameValue || !emailValue || !companyValue || !messageValue) {
+        setSubmissionStatus('error');
+        setSubmissionMessage('All fields are required before we make contact.');
+        return;
       }
-    )
-      .then((res) => res.text())
-      .then((data) => {
-        console.log('Server response:', data);
+
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyIoHrPelVMtRMH2kerd47cnSnzU3y-CwKPZ2ALeoEqjF_L8ajjcC6SaHiwMCrZooM1/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            Name: document.getElementById("name").value,
+            Email: document.getElementById("email").value,
+            Company: document.getElementById("company").value,
+            Message: document.getElementById("message").value
+          })
+        });
+        const result = await response.text();
+        console.log('Server response:', result);
         setSubmissionStatus('success');
-        setSubmissionMessage(data || 'Transmission received. Expect a response within 48 hours.');
-        form.reset();
-      })
-      .catch((err) => {
-        console.error('Fetch error:', err);
+        setSubmissionMessage(result || 'Transmission received. Expect a response within 48 hours.');
+        e.currentTarget.reset();
+      } catch (err) {
+        console.error('Submission failed:', err);
         setSubmissionStatus('error');
         setSubmissionMessage(
           err instanceof Error
             ? `Submission failed: ${err.message}`
             : 'Submission failed: An unknown error disrupted the signal.'
         );
-      });
-  };
+      }
+    };
+
+    document.querySelector("form").addEventListener("submit", submitHandler);
+
+    return () => {
+      document.querySelector("form")?.removeEventListener("submit", submitHandler);
+    };
+  }, []);
 
   return (
     <div className="relative z-10 text-white">
@@ -814,7 +808,7 @@ function MainSite() {
             <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
               <p className="text-sm uppercase tracking-[0.4em] text-white/60">Contact</p>
               <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Ready to build the thing everyone will pretend they believed in from day one?</h2>
-              <form onSubmit={handleContactSubmit} className="mt-8 grid gap-6 md:grid-cols-2">
+              <form className="mt-8 grid gap-6 md:grid-cols-2">
                 <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
                   Name
                   <input
