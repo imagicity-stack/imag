@@ -121,29 +121,31 @@ const navLinks = [
 
 const teamMembers = [
   {
-    name: 'Creative Strategist',
-    title: 'Founder & Brand Architect',
-    handle: 'imagicity',
-    status: 'Calibrating',
-    contactText: 'Coming Soon',
+    name: 'Dewesh Karan',
+    title: 'Creative Strategist',
+    handle: 'akadikii',
+    status: 'Online',
+    contactText: 'Contact Me',
     avatarUrl: '/diki.png',
-    fallbackAvatarUrl: '/Diki.png'
+    onContactClick: () => window.open('https://instagram.com/akadikii', '_blank', 'noopener,noreferrer')
   },
   {
-    name: 'Editor In Chief',
-    title: 'Vfx artist and Video editor',
-    handle: 'experience',
-    status: 'In Studio',
-    contactText: 'Coming Soon',
-    avatarUrl: '/Lepomi.png',
-    fallbackAvatarUrl: '/lepomi.png'
+    name: 'Sarthak',
+    title: 'Video Editor',
+    handle: 'omi.sarthak',
+    status: 'Online',
+    contactText: 'Contact Me',
+    avatarUrl: '/lepomi.png',
+    onContactClick: () => window.open('https://instagram.com/omi.sarthak', '_blank', 'noopener,noreferrer')
   },
   {
-    name: 'Growth Strategist',
-    title: 'Demand Engineer',
-    handle: 'growth',
-    status: 'Mapping Momentum',
-    contactText: 'Coming Soon'
+    name: 'SHREY',
+    title: 'App/Web Developer',
+    handle: 'sshreysingh',
+    status: 'Online',
+    contactText: 'Contact Me',
+    avatarUrl: '/shrey.png',
+    onContactClick: () => window.open('https://instagram.com/sshreysingh', '_blank', 'noopener,noreferrer')
   }
 ];
 
@@ -399,10 +401,8 @@ function TeamSection() {
       <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
         <div className="max-w-2xl space-y-4">
           <p className="text-sm uppercase tracking-[0.4em] text-white/60">Team</p>
-          <h2 className="text-3xl font-semibold md:text-4xl">The minds engineering the spectacle.</h2>
-          <p className="text-sm text-white/60">
-            Portraits drop soon. Until then, meet the core behind the city.
-          </p>
+          <h2 className="text-3xl font-semibold md:text-4xl">Dewesh Karan, Sarthak &amp; SHREY</h2>
+          <p className="text-sm text-white/60">Creative Strategist, Video Editor &amp; App/Web Developer shaping the experience.</p>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {teamMembers.map((member) => (
@@ -414,8 +414,8 @@ function TeamSection() {
               status={member.status}
               contactText={member.contactText}
               avatarUrl={member.avatarUrl}
-              fallbackAvatarUrl={member.fallbackAvatarUrl}
-              showUserInfo={false}
+              showUserInfo
+              onContactClick={member.onContactClick}
               enableMobileTilt={false}
               className="h-full"
             />
