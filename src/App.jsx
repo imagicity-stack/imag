@@ -121,29 +121,31 @@ const navLinks = [
 
 const teamMembers = [
   {
-    name: 'Creative Strategist',
-    title: 'Founder & Brand Architect',
-    handle: 'imagicity',
-    status: 'Calibrating',
-    contactText: 'Coming Soon',
+    name: 'Dewesh Karan',
+    title: 'Creative Strategist',
+    handle: 'akadikii',
+    status: 'Online',
+    contactText: 'Contact Me',
     avatarUrl: '/diki.png',
-    fallbackAvatarUrl: '/Diki.png'
+    onContactClick: () => window.open('https://instagram.com/akadikii', '_blank', 'noopener,noreferrer')
   },
   {
-    name: 'Editor In Chief',
-    title: 'Vfx artist and Video editor',
-    handle: 'experience',
-    status: 'In Studio',
-    contactText: 'Coming Soon',
-    avatarUrl: '/Lepomi.png',
-    fallbackAvatarUrl: '/lepomi.png'
+    name: 'Sarthak',
+    title: 'Video Editor',
+    handle: 'omi.sarthak',
+    status: 'Online',
+    contactText: 'Contact Me',
+    avatarUrl: '/lepomi.png',
+    onContactClick: () => window.open('https://instagram.com/omi.sarthak', '_blank', 'noopener,noreferrer')
   },
   {
-    name: 'Growth Strategist',
-    title: 'Demand Engineer',
-    handle: 'growth',
-    status: 'Mapping Momentum',
-    contactText: 'Coming Soon'
+    name: 'SHREY',
+    title: 'App/Web Developer',
+    handle: 'sshreysingh',
+    status: 'Online',
+    contactText: 'Contact Me',
+    avatarUrl: '/shrey.png',
+    onContactClick: () => window.open('https://instagram.com/sshreysingh', '_blank', 'noopener,noreferrer')
   }
 ];
 
@@ -399,10 +401,8 @@ function TeamSection() {
       <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
         <div className="max-w-2xl space-y-4">
           <p className="text-sm uppercase tracking-[0.4em] text-white/60">Team</p>
-          <h2 className="text-3xl font-semibold md:text-4xl">The minds engineering the spectacle.</h2>
-          <p className="text-sm text-white/60">
-            Portraits drop soon. Until then, meet the core behind the city.
-          </p>
+          <h2 className="text-3xl font-semibold md:text-4xl">Dewesh Karan, Sarthak &amp; SHREY</h2>
+          <p className="text-sm text-white/60">Creative Strategist, Video Editor &amp; App/Web Developer shaping the experience.</p>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {teamMembers.map((member) => (
@@ -414,8 +414,8 @@ function TeamSection() {
               status={member.status}
               contactText={member.contactText}
               avatarUrl={member.avatarUrl}
-              fallbackAvatarUrl={member.fallbackAvatarUrl}
-              showUserInfo={false}
+              showUserInfo
+              onContactClick={member.onContactClick}
               enableMobileTilt={false}
               className="h-full"
             />
@@ -672,71 +672,39 @@ function MainSite() {
     setSubmissionStatus('sending');
     setSubmissionMessage('');
 
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const companyInput = document.getElementById('company');
-    const messageInput = document.getElementById('message');
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: (formData.get('name') || '').toString().trim(),
+      email: (formData.get('email') || '').toString().trim(),
+      company: (formData.get('company') || '').toString().trim(),
+      message: (formData.get('message') || '').toString().trim()
+    };
 
-    if (!nameInput || !emailInput || !companyInput || !messageInput) {
-      setSubmissionStatus('error');
-      setSubmissionMessage('The contact form failed to initialize. Refresh and try again.');
-      return;
-    }
-
-    nameInput.value = nameInput.value.trim();
-    emailInput.value = emailInput.value.trim();
-    companyInput.value = companyInput.value.trim();
-    messageInput.value = messageInput.value.trim();
-
-    if (!nameInput.value || !emailInput.value || !companyInput.value || !messageInput.value) {
+    if (!payload.name || !payload.email || !payload.company || !payload.message) {
       setSubmissionStatus('error');
       setSubmissionMessage('All fields are required before we make contact.');
       return;
     }
 
     try {
-      const response = await fetch(
-        'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec',
+      await fetch(
+        'https://script.google.com/macros/s/AKfycbzhhovEXPs138JT9NHw-ZgXm-bYEkN73JAKQW2z1o6u87hP9QdOwNQm7dmYqmCbqkjn/exec',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({
-            name: nameInput.value,
-            email: emailInput.value,
-            company: companyInput.value,
-            message: messageInput.value
-          })
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         }
       );
 
-      const resultText = await response.text();
-      console.log('Server response:', resultText);
-
-      if (!response.ok) {
-        const statusMessage =
-          response.status === 403
-            ? 'The Apps Script returned HTTP 403. Ensure the deployment access level is set to "Anyone with the link".'
-            : `Received HTTP ${response.status} from the submission endpoint.`;
-        throw new Error(resultText || statusMessage);
-      }
-
-      console.log('Success');
       setSubmissionStatus('success');
-      setSubmissionMessage(resultText || 'Transmission received. Expect a response within 48 hours.');
-      e.currentTarget.reset();
+      form.reset();
+      window.alert('Message sent successfully!');
     } catch (err) {
       console.error('Submission failed:', err);
-      console.error('Error');
       setSubmissionStatus('error');
-
-      const message =
-        err instanceof Error && err.message.includes('Failed to fetch')
-          ? 'We could not reach the Apps Script endpoint. Confirm the deployment is accessible to Anyone with the link and that your network allows the request.'
-          : err instanceof Error
-          ? err.message
-          : 'An unknown error disrupted the signal.';
-
-      setSubmissionMessage(`Submission failed: ${message}`);
+      setSubmissionMessage('We could not submit your message. Please try again.');
     }
   }, []);
 

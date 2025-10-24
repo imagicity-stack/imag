@@ -257,9 +257,6 @@
 
 .pc-avatar-content .avatar {
   width: 100%;
-  max-height: 100%;
-  height: auto;
-  object-fit: contain;
   position: absolute;
   left: 50%;
   transform: translateX(-50%) scale(1);
@@ -385,7 +382,8 @@
 .pc-details h3 {
   font-weight: 600;
   margin: 0;
-  font-size: clamp(1.45rem, 1rem + 1vw, 2.35rem);
+  font-size: min(5svh, 3em);
+  margin: 0;
   background-image: linear-gradient(to bottom, #fff, #6f6fbe);
   background-size: 1em 1.5em;
   -webkit-text-fill-color: transparent;
@@ -396,9 +394,9 @@
 .pc-details p {
   font-weight: 600;
   position: relative;
-  top: -10px;
+  top: -12px;
   white-space: nowrap;
-  font-size: clamp(0.8rem, 0.6rem + 0.5vw, 0.95rem);
+  font-size: 16px;
   margin: 0 auto;
   width: min-content;
   background-image: linear-gradient(to bottom, #fff, #4a4ac0);
@@ -441,16 +439,15 @@
   }
 
   .pc-details {
-    top: 1.75em;
+    top: 2em;
   }
 
   .pc-details h3 {
-    font-size: clamp(1.25rem, 0.95rem + 1.4vw, 1.7rem);
+    font-size: min(4svh, 2.5em);
   }
 
   .pc-details p {
-    top: -8px;
-    font-size: clamp(0.72rem, 0.58rem + 0.6vw, 0.88rem);
+    font-size: 14px;
   }
 
   .pc-user-info {
@@ -494,12 +491,12 @@
   }
 
   .pc-details h3 {
-    font-size: clamp(1.1rem, 0.9rem + 1vw, 1.5rem);
+    font-size: min(3.5svh, 2em);
   }
 
   .pc-details p {
-    font-size: clamp(0.68rem, 0.55rem + 0.7vw, 0.82rem);
-    top: -6px;
+    font-size: 12px;
+    top: -8px;
   }
 
   .pc-user-info {
@@ -541,11 +538,11 @@
   }
 
   .pc-details h3 {
-    font-size: clamp(1rem, 0.85rem + 1.2vw, 1.25rem);
+    font-size: min(3svh, 1.5em);
   }
 
   .pc-details p {
-    font-size: clamp(0.6rem, 0.48rem + 1.1vw, 0.75rem);
+    font-size: 11px;
   }
 
   .pc-user-info {
