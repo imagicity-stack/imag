@@ -540,7 +540,7 @@ function Navigation() {
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
-      <div className="relative mx-auto flex max-w-6xl items-center px-6 py-3">
+      <div className="relative mx-auto flex max-w-6xl items-center px-6 py-3 md:py-5">
         <a href="#hero" onClick={handleAnchorClick('#hero')} className="flex items-center justify-center">
           <img
             src={logoAsset}
@@ -935,13 +935,31 @@ function MainSite() {
         <footer className="border-t border-white/10 py-12">
           <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
             <p>If you made it this far, you’re one of us.</p>
-            <a
-              href="#pricing"
-              onClick={handleSmoothAnchor}
-              className="inline-flex items-center rounded-full px-3 py-2 text-aurum transition-colors hover:bg-aurum hover:text-black"
-            >
-              Still looking for a price list? Fine. Click here.
-            </a>
+            <div className="flex flex-wrap gap-4 text-sm uppercase tracking-[0.3em] text-white/60">
+              {socialPlatforms.map((platform) => (
+                <a
+                  key={platform.name}
+                  href={platform.href}
+                  className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
+                >
+                  {platform.icon({ className: 'h-4 w-4' })}
+                  <span className="sr-only">{platform.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="mx-auto mt-4 flex max-w-6xl flex-wrap gap-4 px-6 text-xs text-white/50">
+            {[{ label: 'Privacy Policy', href: '/privacy-policy/' }, { label: 'Terms & Conditions', href: '/terms-and-conditions/' }, { label: 'Return & Refund Policy', href: '/return-and-refund-policy/' }].map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-aurum"
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
           <div className="mx-auto mt-6 flex max-w-6xl flex-wrap gap-4 px-6 text-sm uppercase tracking-[0.3em] text-white/60 md:justify-end">
             {socialPlatforms.map((platform) => (
