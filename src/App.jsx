@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import ProfileCard from './components/ProfileCard';
 import SpotlightCard from './components/SpotlightCard';
+import LiquidEther from './components/LiquidEther';
 
 const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
 
@@ -1033,6 +1034,27 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 -z-10">
+        <LiquidEther
+          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={false}
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+          className="h-full w-full"
+          style={{ width: '100%', height: '100%' }}
+        />
+      </div>
       <AnimatePresence mode="wait">
         {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
       </AnimatePresence>
