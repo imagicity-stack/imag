@@ -446,11 +446,11 @@
   }
 
   .pc-details h3 {
-    font-size: min(4svh, 2.5em);
+    font-size: min(3.5svh, 2.25em);
   }
 
   .pc-details p {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .pc-user-info {
@@ -494,11 +494,11 @@
   }
 
   .pc-details h3 {
-    font-size: min(3.5svh, 2em);
+    font-size: min(3svh, 1.75em);
   }
 
   .pc-details p {
-    font-size: 12px;
+    font-size: 11px;
     top: -8px;
   }
 
@@ -541,11 +541,11 @@
   }
 
   .pc-details h3 {
-    font-size: min(3svh, 1.5em);
+    font-size: min(2.5svh, 1.35em);
   }
 
   .pc-details p {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .pc-user-info {

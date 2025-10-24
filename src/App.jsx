@@ -121,7 +121,7 @@ const navLinks = [
 
 const teamMembers = [
   {
-    name: 'Vision Lead',
+    name: 'Creative Strategist',
     title: 'Founder & Brand Architect',
     handle: 'imagicity',
     status: 'Calibrating',
@@ -129,11 +129,12 @@ const teamMembers = [
     avatarUrl: '/diki.png'
   },
   {
-    name: 'Experience Chief',
-    title: 'Creative Director',
+    name: 'Editor In Chief',
+    title: 'Vfx artist and Video editor',
     handle: 'experience',
     status: 'In Studio',
-    contactText: 'Coming Soon'
+    contactText: 'Coming Soon',
+    avatarUrl: '/Lepomi.png'
   },
   {
     name: 'Growth Strategist',
