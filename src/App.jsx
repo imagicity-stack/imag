@@ -509,7 +509,7 @@ function PricingModal() {
 function Navigation() {
   const [open, setOpen] = useState(false);
 
-  const logoAsset = 'https://drive.google.com/uc?export=view&id=14FFG3ZCxQ1-5GVjVg3NX8O7vpykYA52L';
+  const logoAsset = '/logo.png';
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
