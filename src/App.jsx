@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import DotGrid from './components/DotGrid';
+import SpotlightCard from './components/SpotlightCard';
 
 const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
 
@@ -356,15 +357,24 @@ function RotatingWords() {
 function ServiceCard({ title, description, index }) {
   return (
     <motion.div
-      className="group flex flex-col gap-3 rounded-3xl border border-white/10 bg-plum/20 p-8 backdrop-blur transition"
+      className="transition"
       whileHover={{ rotateX: 4, rotateY: -4, translateY: -6 }}
       style={{ transformOrigin: 'center center' }}
       transition={{ type: 'spring', stiffness: 200, damping: 16 }}
     >
-      <span className="text-sm uppercase tracking-[0.35em] text-white/50">{String(index + 1).padStart(2, '0')}</span>
-      <h3 className="text-2xl font-semibold text-white">{title}</h3>
-      <p className="text-sm text-white/70">{description}</p>
-      <span className="mt-auto text-xs uppercase tracking-[0.3em] text-aurum opacity-0 transition-opacity group-hover:opacity-100">Unpack →</span>
+      <SpotlightCard
+        className="group flex h-full flex-col gap-3 backdrop-blur"
+        style={{
+          '--spotlight-border': '1px solid rgba(255, 255, 255, 0.1)',
+          '--spotlight-bg': 'rgba(0, 0, 0, 0.65)',
+          '--spotlight-padding': '2rem'
+        }}
+      >
+        <span className="text-sm uppercase tracking-[0.35em] text-white/50">{String(index + 1).padStart(2, '0')}</span>
+        <h3 className="text-2xl font-semibold text-white">{title}</h3>
+        <p className="text-sm text-white/70">{description}</p>
+        <span className="mt-auto text-xs uppercase tracking-[0.3em] text-aurum opacity-0 transition-opacity group-hover:opacity-100">Unpack →</span>
+      </SpotlightCard>
     </motion.div>
   );
 }
