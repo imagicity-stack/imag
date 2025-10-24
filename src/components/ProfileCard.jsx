@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import './ProfileCard.css';
 
 const DEFAULT_BEHIND_GRADIENT =
@@ -21,13 +21,12 @@ const round = (value, precision = 3) => parseFloat(value.toFixed(precision));
 const adjust = (value, fromMin, fromMax, toMin, toMax) =>
   round(toMin + ((toMax - toMin) * (value - fromMin)) / (fromMax - fromMin));
 
-const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const easeInOutCubic = x => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
 const ProfileCardComponent = ({
-  avatarUrl = '',
-  fallbackAvatarUrl = '',
-  iconUrl = '',
-  grainUrl = '',
+  avatarUrl = '<Placeholder for avatar URL>',
+  iconUrl = '<Placeholder for icon URL>',
+  grainUrl = '<Placeholder for grain URL>',
   behindGradient,
   innerGradient,
   showBehindGradient = true,
@@ -36,7 +35,6 @@ const ProfileCardComponent = ({
   enableMobileTilt = false,
   mobileTiltSensitivity = 5,
   miniAvatarUrl,
-  fallbackMiniAvatarUrl = '',
   name = 'Javi A. Torres',
   title = 'Software Engineer',
   handle = 'javicodes',
@@ -85,7 +83,7 @@ const ProfileCardComponent = ({
       const targetX = wrap.clientWidth / 2;
       const targetY = wrap.clientHeight / 2;
 
-      const animationLoop = (currentTime) => {
+      const animationLoop = currentTime => {
         const elapsed = currentTime - startTime;
         const progress = clamp(elapsed / duration);
         const easedProgress = easeInOutCubic(progress);
@@ -116,7 +114,7 @@ const ProfileCardComponent = ({
   }, [enableTilt]);
 
   const handlePointerMove = useCallback(
-    (event) => {
+    event => {
       const card = cardRef.current;
       const wrap = wrapRef.current;
 
@@ -140,7 +138,7 @@ const ProfileCardComponent = ({
   }, [animationHandlers]);
 
   const handlePointerLeave = useCallback(
-    (event) => {
+    event => {
       const card = cardRef.current;
       const wrap = wrapRef.current;
 
@@ -160,14 +158,14 @@ const ProfileCardComponent = ({
   );
 
   const handleDeviceOrientation = useCallback(
-    (event) => {
+    event => {
       const card = cardRef.current;
       const wrap = wrapRef.current;
 
       if (!card || !wrap || !animationHandlers) return;
 
       const { beta, gamma } = event;
-      if (beta == null || gamma == null) return;
+      if (!beta || !gamma) return;
 
       animationHandlers.updateCardTransform(
         card.clientHeight / 2 + gamma * mobileTiltSensitivity,
@@ -193,15 +191,15 @@ const ProfileCardComponent = ({
     const deviceOrientationHandler = handleDeviceOrientation;
 
     const handleClick = () => {
-      if (!enableMobileTilt || window.location.protocol !== 'https:') return;
-      if (typeof window.DeviceMotionEvent?.requestPermission === 'function') {
+      if (!enableMobileTilt || location.protocol !== 'https:') return;
+      if (typeof window.DeviceMotionEvent.requestPermission === 'function') {
         window.DeviceMotionEvent.requestPermission()
-          .then((state) => {
+          .then(state => {
             if (state === 'granted') {
               window.addEventListener('deviceorientation', deviceOrientationHandler);
             }
           })
-          .catch((err) => console.error(err));
+          .catch(err => console.error(err));
       } else {
         window.addEventListener('deviceorientation', deviceOrientationHandler);
       }
@@ -240,7 +238,7 @@ const ProfileCardComponent = ({
     () => ({
       '--icon': iconUrl ? `url(${iconUrl})` : 'none',
       '--grain': grainUrl ? `url(${grainUrl})` : 'none',
-      '--behind-gradient': showBehindGradient ? behindGradient ?? DEFAULT_BEHIND_GRADIENT : 'none',
+      '--behind-gradient': showBehindGradient ? (behindGradient ?? DEFAULT_BEHIND_GRADIENT) : 'none',
       '--inner-gradient': innerGradient ?? DEFAULT_INNER_GRADIENT
     }),
     [iconUrl, grainUrl, showBehindGradient, behindGradient, innerGradient]
@@ -250,32 +248,6 @@ const ProfileCardComponent = ({
     onContactClick?.();
   }, [onContactClick]);
 
-  const handleAvatarError = useCallback((event) => {
-    const target = event.currentTarget;
-    const { fallbackSrc, attemptedFallback } = target.dataset;
-
-    if (fallbackSrc && attemptedFallback !== 'true') {
-      target.dataset.attemptedFallback = 'true';
-      target.src = fallbackSrc;
-      return;
-    }
-
-    target.style.display = 'none';
-  }, []);
-
-  const handleMiniAvatarError = useCallback((event) => {
-    const target = event.currentTarget;
-    const { fallbackSrc, attemptedFallback } = target.dataset;
-
-    if (fallbackSrc && attemptedFallback !== 'true') {
-      target.dataset.attemptedFallback = 'true';
-      target.src = fallbackSrc;
-      return;
-    }
-
-    target.style.opacity = '0.5';
-  }, []);
-
   return (
     <div ref={wrapRef} className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
       <section ref={cardRef} className="pc-card">
@@ -283,31 +255,30 @@ const ProfileCardComponent = ({
           <div className="pc-shine" />
           <div className="pc-glare" />
           <div className="pc-content pc-avatar-content">
-            {avatarUrl && (
-              <img
-                className="avatar"
-                src={avatarUrl}
-                alt={`${name || 'User'} avatar`}
-                loading="lazy"
-                data-fallback-src={fallbackAvatarUrl}
-                onError={handleAvatarError}
-              />
-            )}
+            <img
+              className="avatar"
+              src={avatarUrl}
+              alt={`${name || 'User'} avatar`}
+              loading="lazy"
+              onError={e => {
+                const target = e.target;
+                target.style.display = 'none';
+              }}
+            />
             {showUserInfo && (
               <div className="pc-user-info">
                 <div className="pc-user-details">
                   <div className="pc-mini-avatar">
-                    {miniAvatarUrl || avatarUrl ? (
-                      <img
-                        src={miniAvatarUrl || avatarUrl}
-                        alt={`${name || 'User'} mini avatar`}
-                        loading="lazy"
-                        data-fallback-src={
-                          fallbackMiniAvatarUrl || fallbackAvatarUrl || avatarUrl
-                        }
-                        onError={handleMiniAvatarError}
-                      />
-                    ) : null}
+                    <img
+                      src={miniAvatarUrl || avatarUrl}
+                      alt={`${name || 'User'} mini avatar`}
+                      loading="lazy"
+                      onError={e => {
+                        const target = e.target;
+                        target.style.opacity = '0.5';
+                        target.src = avatarUrl;
+                      }}
+                    />
                   </div>
                   <div className="pc-user-text">
                     <div className="pc-handle">@{handle}</div>
