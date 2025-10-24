@@ -140,9 +140,6 @@ const socialPlatforms = [
     ) }
 ];
 
-const CONTACT_ENDPOINT =
-  'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec';
-
 function TypewriterText({ text, delay = 0, className = '' }) {
   const [displayed, setDisplayed] = useState('');
 
@@ -605,25 +602,31 @@ function MainSite() {
       return;
     }
 
-    const payload = {
-      name: nameInput.value.trim(),
-      email: emailInput.value.trim(),
-      company: companyInput.value.trim(),
-      message: messageInput.value.trim()
-    };
+    nameInput.value = nameInput.value.trim();
+    emailInput.value = emailInput.value.trim();
+    companyInput.value = companyInput.value.trim();
+    messageInput.value = messageInput.value.trim();
 
-    if (!payload.name || !payload.email || !payload.company || !payload.message) {
+    if (!nameInput.value || !emailInput.value || !companyInput.value || !messageInput.value) {
       setSubmissionStatus('error');
       setSubmissionMessage('All fields are required before we make contact.');
       return;
     }
 
     try {
-      const response = await fetch(CONTACT_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            Name: document.getElementById('name').value,
+            Email: document.getElementById('email').value,
+            Company: document.getElementById('company').value,
+            Message: document.getElementById('message').value
+          })
+        }
+      );
 
       const resultText = await response.text();
       console.log('Server response:', resultText);
@@ -636,11 +639,13 @@ function MainSite() {
         throw new Error(resultText || statusMessage);
       }
 
+      console.log('Success');
       setSubmissionStatus('success');
       setSubmissionMessage(resultText || 'Transmission received. Expect a response within 48 hours.');
       e.currentTarget.reset();
     } catch (err) {
       console.error('Submission failed:', err);
+      console.error('Error');
       setSubmissionStatus('error');
 
       const message =
