@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import DotGrid from './components/DotGrid';
+import ProfileCard from './components/ProfileCard';
 import SpotlightCard from './components/SpotlightCard';
 
 const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
@@ -113,8 +114,33 @@ const navLinks = [
   { label: 'Services', href: '#services' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Team', href: '#team' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Connect', href: '#connect' }
+];
+
+const teamMembers = [
+  {
+    name: 'Vision Lead',
+    title: 'Founder & Brand Architect',
+    handle: 'imagicity',
+    status: 'Calibrating',
+    contactText: 'Coming Soon'
+  },
+  {
+    name: 'Experience Chief',
+    title: 'Creative Director',
+    handle: 'experience',
+    status: 'In Studio',
+    contactText: 'Coming Soon'
+  },
+  {
+    name: 'Growth Strategist',
+    title: 'Demand Engineer',
+    handle: 'growth',
+    status: 'Mapping Momentum',
+    contactText: 'Coming Soon'
+  }
 ];
 
 const ENTRY_STORAGE_KEY = 'imagicity-entry-complete';
@@ -381,6 +407,37 @@ function ServiceCard({ title, description, index }) {
   );
 }
 
+function TeamSection() {
+  return (
+    <section id="team" className="mx-auto max-w-6xl px-6 py-24">
+      <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
+        <div className="max-w-2xl space-y-4">
+          <p className="text-sm uppercase tracking-[0.4em] text-white/60">Team</p>
+          <h2 className="text-3xl font-semibold md:text-4xl">The minds engineering the spectacle.</h2>
+          <p className="text-sm text-white/60">
+            Portraits drop soon. Until then, meet the core behind the city.
+          </p>
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {teamMembers.map((member) => (
+            <ProfileCard
+              key={member.name}
+              name={member.name}
+              title={member.title}
+              handle={member.handle}
+              status={member.status}
+              contactText={member.contactText}
+              showUserInfo={false}
+              enableMobileTilt={false}
+              className="h-full"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FAQItem({ item }) {
   const [open, setOpen] = useState(false);
 
@@ -577,7 +634,7 @@ function Navigation() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-            className="fixed inset-y-0 right-0 z-40 w-64 bg-plum/95 p-8 text-right shadow-2xl md:hidden"
+            className="fixed inset-y-0 right-0 z-40 w-64 bg-black p-8 text-right shadow-2xl md:hidden"
           >
             <div className="flex justify-end">
               <button
@@ -855,6 +912,8 @@ function MainSite() {
           </div>
         </section>
 
+        <TeamSection />
+
         <FAQSection />
 
         <section id="connect" className="py-24">
@@ -958,18 +1017,6 @@ function MainSite() {
                 className="hover:text-aurum"
               >
                 {link.label}
-              </a>
-            ))}
-          </div>
-          <div className="mx-auto mt-6 flex max-w-6xl flex-wrap gap-4 px-6 text-sm uppercase tracking-[0.3em] text-white/60 md:justify-end">
-            {socialPlatforms.map((platform) => (
-              <a
-                key={platform.name}
-                href={platform.href}
-                className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
-              >
-                {platform.icon({ className: 'h-4 w-4' })}
-                <span className="sr-only">{platform.name}</span>
               </a>
             ))}
           </div>
