@@ -507,7 +507,7 @@ function PricingModal() {
 function Navigation() {
   const [open, setOpen] = useState(false);
 
-  const logoAsset = '/SIDE%20ALLIGNED%20BLACK.svg';
+  const logoAsset = '/header.svg';
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
@@ -528,7 +528,7 @@ function Navigation() {
           <img
             src={logoAsset}
             alt="Imagicity"
-            className="h-8 w-auto md:h-10"
+            className="h-10 w-auto md:h-12"
           />
         </a>
         <div className="hidden items-center gap-8 md:flex">
