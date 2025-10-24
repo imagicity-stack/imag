@@ -10,6 +10,30 @@ body {
   @apply bg-black text-white antialiased font-sans;
 }
 
+.marquee {
+  position: relative;
+  overflow: hidden;
+}
+
+.marquee__inner {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 3rem;
+  padding: 1rem 0;
+  animation: marquee-scroll 20s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
