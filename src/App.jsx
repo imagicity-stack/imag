@@ -507,6 +507,8 @@ function PricingModal() {
 function Navigation() {
   const [open, setOpen] = useState(false);
 
+  const logoAsset = '/SIDE%20ALLIGNED%20BLACK.svg';
+
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => {
@@ -518,9 +520,16 @@ function Navigation() {
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#hero" className="text-sm font-semibold uppercase tracking-[0.4em] text-aurum transition-colors hover:text-white">
-          Imagicity
+      <div className="relative mx-auto flex max-w-6xl items-center px-6 py-4">
+        <a
+          href="#hero"
+          className="mx-auto inline-flex items-center md:mx-0 md:mr-auto"
+        >
+          <img
+            src={logoAsset}
+            alt="Imagicity"
+            className="h-8 w-auto md:h-10"
+          />
         </a>
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
@@ -542,7 +551,7 @@ function Navigation() {
         <button
           type="button"
           onClick={() => setOpen((prev) => !prev)}
-          className="group flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-white/20 text-white transition-colors hover:bg-aurum hover:text-black md:hidden"
+          className="group absolute right-6 top-1/2 flex h-10 w-10 -translate-y-1/2 flex-col items-center justify-center gap-1.5 rounded-full border border-white/20 text-white transition-colors hover:bg-aurum hover:text-black md:hidden"
         >
           <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
           <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
