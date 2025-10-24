@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">Imagicity wordmark</title>
+  <desc id="logoDesc">Stylized Imagicity logotype for navigation header</desc>
+  <rect width="320" height="72" rx="16" fill="#050505"/>
+  <g fill="#FFFFFF" font-family="'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="600">
+    <text x="32" y="46" letter-spacing="0.24em">IMAGICITY</text>
+  </g>
+  <rect x="24" y="18" width="12" height="36" rx="6" fill="#A50000"/>
+</svg>
