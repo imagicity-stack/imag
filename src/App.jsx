@@ -117,6 +117,8 @@ const navLinks = [
   { label: 'Contact', href: '#contact' }
 ];
 
+const ENTRY_STORAGE_KEY = 'imagicity-entry-complete';
+
 const socialPlatforms = [
   { name: 'LinkedIn', href: '#', icon: (props) => (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -938,11 +940,26 @@ function MainSite() {
 export default function App() {
   const [entered, setEntered] = useState(false);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hasEntered = window.localStorage.getItem(ENTRY_STORAGE_KEY);
+    if (hasEntered === 'true') {
+      setEntered(true);
+    }
+  }, []);
+
+  const handleEntryComplete = () => {
+    setEntered(true);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(ENTRY_STORAGE_KEY, 'true');
+    }
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
       <DotBackdrop />
       <AnimatePresence mode="wait">
-        {!entered ? <EntryGate key="entry" onComplete={() => setEntered(true)} /> : <MainSite key="main" />}
+        {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
       </AnimatePresence>
     </div>
   );
