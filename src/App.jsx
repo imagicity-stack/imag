@@ -614,20 +614,19 @@ function MainSite() {
     }
 
     try {
-      const url = `https://corsproxy.io/?${encodeURIComponent(
-        'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec'
-      )}`;
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          Name: document.getElementById('name').value,
-          Email: document.getElementById('email').value,
-          Company: document.getElementById('company').value,
-          Message: document.getElementById('message').value
-        })
-      });
+      const response = await fetch(
+        'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            name: nameInput.value,
+            email: emailInput.value,
+            company: companyInput.value,
+            message: messageInput.value
+          })
+        }
+      );
 
       const resultText = await response.text();
       console.log('Server response:', resultText);
