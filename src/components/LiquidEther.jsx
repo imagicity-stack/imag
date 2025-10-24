@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import * as THREEImport from 'three';
+
 import './LiquidEther.css';
 
 export default function LiquidEther({
@@ -33,7 +35,9 @@ export default function LiquidEther({
   useEffect(() => {
     if (!mountRef.current) return;
 
-    const THREE = typeof window !== 'undefined' ? window.THREE : undefined;
+    const THREE =
+      (THREEImport && typeof THREEImport.WebGLRenderer === 'function' ? THREEImport : null) ||
+      (typeof window !== 'undefined' ? window.THREE : undefined);
     if (!THREE) {
       console.warn('LiquidEther: THREE.js not found on window. Ensure the script is loaded before using this component.');
       return;
