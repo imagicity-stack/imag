@@ -119,7 +119,7 @@ const navLinks = [
   { label: 'Connect', href: '#connect' }
 ];
 
-const marqueeText = 'If this text made you stop Imagine what we’ll do to your audience';
+const marqueeText = 'IF THIS TEXT MADE YOU STOP IMAGINE WHAT WE’LL DO TO YOUR AUDIENCE';
 const marqueeSegments = Array.from({ length: 4 }, () => marqueeText);
 
 const teamMembers = [
@@ -753,6 +753,21 @@ function MainSite() {
             </motion.a>
           </div>
         </header>
+
+        <section className="bg-white py-4">
+          <div className="marquee">
+            <div className="marquee__inner">
+              {[...marqueeSegments, ...marqueeSegments].map((text, index) => (
+                <span
+                  key={index}
+                  className="mx-12 whitespace-nowrap text-lg font-semibold tracking-wide text-black md:text-2xl"
+                >
+                  {text}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <section id="about" className="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-2">
           <motion.div
