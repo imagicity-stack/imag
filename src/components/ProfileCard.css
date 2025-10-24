@@ -385,8 +385,7 @@
 .pc-details h3 {
   font-weight: 600;
   margin: 0;
-  font-size: min(5svh, 3em);
-  margin: 0;
+  font-size: clamp(1.75rem, 2vw + 1.4rem, 3rem);
   background-image: linear-gradient(to bottom, #fff, #6f6fbe);
   background-size: 1em 1.5em;
   -webkit-text-fill-color: transparent;
@@ -397,9 +396,9 @@
 .pc-details p {
   font-weight: 600;
   position: relative;
-  top: -12px;
+  top: -10px;
   white-space: nowrap;
-  font-size: 16px;
+  font-size: clamp(0.85rem, 1vw + 0.55rem, 1.1rem);
   margin: 0 auto;
   width: min-content;
   background-image: linear-gradient(to bottom, #fff, #4a4ac0);
@@ -442,15 +441,16 @@
   }
 
   .pc-details {
-    top: 2em;
+    top: 1.75em;
   }
 
   .pc-details h3 {
-    font-size: min(3.5svh, 2.25em);
+    font-size: clamp(1.35rem, 1rem + 2vw, 2rem);
   }
 
   .pc-details p {
-    font-size: 12px;
+    top: -8px;
+    font-size: clamp(0.75rem, 0.6rem + 1vw, 0.95rem);
   }
 
   .pc-user-info {
@@ -494,12 +494,12 @@
   }
 
   .pc-details h3 {
-    font-size: min(3svh, 1.75em);
+    font-size: clamp(1.25rem, 0.95rem + 2.5vw, 1.75rem);
   }
 
   .pc-details p {
-    font-size: 11px;
-    top: -8px;
+    font-size: clamp(0.7rem, 0.55rem + 1.8vw, 0.9rem);
+    top: -6px;
   }
 
   .pc-user-info {
@@ -541,11 +541,11 @@
   }
 
   .pc-details h3 {
-    font-size: min(2.5svh, 1.35em);
+    font-size: clamp(1.1rem, 0.9rem + 1.5vw, 1.35rem);
   }
 
   .pc-details p {
-    font-size: 10px;
+    font-size: clamp(0.65rem, 0.5rem + 1.5vw, 0.8rem);
   }
 
   .pc-user-info {

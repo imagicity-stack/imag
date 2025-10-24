@@ -25,6 +25,7 @@ const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2
 
 const ProfileCardComponent = ({
   avatarUrl = '',
+  fallbackAvatarUrl = '',
   iconUrl = '',
   grainUrl = '',
   behindGradient,
@@ -35,6 +36,7 @@ const ProfileCardComponent = ({
   enableMobileTilt = false,
   mobileTiltSensitivity = 5,
   miniAvatarUrl,
+  fallbackMiniAvatarUrl = '',
   name = 'Javi A. Torres',
   title = 'Software Engineer',
   handle = 'javicodes',
@@ -248,6 +250,32 @@ const ProfileCardComponent = ({
     onContactClick?.();
   }, [onContactClick]);
 
+  const handleAvatarError = useCallback((event) => {
+    const target = event.currentTarget;
+    const { fallbackSrc, attemptedFallback } = target.dataset;
+
+    if (fallbackSrc && attemptedFallback !== 'true') {
+      target.dataset.attemptedFallback = 'true';
+      target.src = fallbackSrc;
+      return;
+    }
+
+    target.style.display = 'none';
+  }, []);
+
+  const handleMiniAvatarError = useCallback((event) => {
+    const target = event.currentTarget;
+    const { fallbackSrc, attemptedFallback } = target.dataset;
+
+    if (fallbackSrc && attemptedFallback !== 'true') {
+      target.dataset.attemptedFallback = 'true';
+      target.src = fallbackSrc;
+      return;
+    }
+
+    target.style.opacity = '0.5';
+  }, []);
+
   return (
     <div ref={wrapRef} className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
       <section ref={cardRef} className="pc-card">
@@ -261,9 +289,8 @@ const ProfileCardComponent = ({
                 src={avatarUrl}
                 alt={`${name || 'User'} avatar`}
                 loading="lazy"
-                onError={(event) => {
-                  event.currentTarget.style.display = 'none';
-                }}
+                data-fallback-src={fallbackAvatarUrl}
+                onError={handleAvatarError}
               />
             )}
             {showUserInfo && (
@@ -275,10 +302,10 @@ const ProfileCardComponent = ({
                         src={miniAvatarUrl || avatarUrl}
                         alt={`${name || 'User'} mini avatar`}
                         loading="lazy"
-                        onError={(event) => {
-                          event.currentTarget.style.opacity = '0.5';
-                          event.currentTarget.src = avatarUrl;
-                        }}
+                        data-fallback-src={
+                          fallbackMiniAvatarUrl || fallbackAvatarUrl || avatarUrl
+                        }
+                        onError={handleMiniAvatarError}
                       />
                     ) : null}
                   </div>

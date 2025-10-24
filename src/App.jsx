@@ -126,7 +126,8 @@ const teamMembers = [
     handle: 'imagicity',
     status: 'Calibrating',
     contactText: 'Coming Soon',
-    avatarUrl: '/diki.png'
+    avatarUrl: '/diki.png',
+    fallbackAvatarUrl: '/Diki.png'
   },
   {
     name: 'Editor In Chief',
@@ -134,7 +135,8 @@ const teamMembers = [
     handle: 'experience',
     status: 'In Studio',
     contactText: 'Coming Soon',
-    avatarUrl: '/Lepomi.png'
+    avatarUrl: '/Lepomi.png',
+    fallbackAvatarUrl: '/lepomi.png'
   },
   {
     name: 'Growth Strategist',
@@ -430,6 +432,7 @@ function TeamSection() {
               status={member.status}
               contactText={member.contactText}
               avatarUrl={member.avatarUrl}
+              fallbackAvatarUrl={member.fallbackAvatarUrl}
               showUserInfo={false}
               enableMobileTilt={false}
               className="h-full"
