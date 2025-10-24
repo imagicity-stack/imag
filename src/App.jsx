@@ -114,7 +114,7 @@ const navLinks = [
   { label: 'Pricing', href: '#pricing' },
   { label: 'Portfolio', href: '#portfolio' },
   { label: 'FAQ', href: '#faq' },
-  { label: 'Contact', href: '#contact' }
+  { label: 'Connect', href: '#connect' }
 ];
 
 const ENTRY_STORAGE_KEY = 'imagicity-entry-complete';
@@ -381,8 +381,8 @@ function ServiceCard({ title, description, index }) {
   );
 }
 
-function FAQItem({ item, index }) {
-  const [open, setOpen] = useState(index < 2);
+function FAQItem({ item }) {
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="group border-b border-white/10 py-4">
@@ -418,7 +418,7 @@ function FAQItem({ item, index }) {
 }
 
 function FAQSection() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <section id="faq" className="mx-auto max-w-4xl px-6 py-24">
@@ -442,8 +442,8 @@ function FAQSection() {
               transition={{ duration: 0.4 }}
               className="mt-8 divide-y divide-white/10"
             >
-              {faqItems.map((item, index) => (
-                <FAQItem key={item.q} item={item} index={index} />
+              {faqItems.map((item) => (
+                <FAQItem key={item.q} item={item} />
               ))}
             </motion.div>
           )}
@@ -518,37 +518,43 @@ function Navigation() {
     };
   }, [open]);
 
-  const handleNavClick = () => setOpen(false);
+  const handleNavClick = useCallback(() => setOpen(false), []);
+
+  const handleAnchorClick = useCallback(
+    (href) => (event) => {
+      event.preventDefault();
+      handleNavClick();
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      }
+    },
+    [handleNavClick]
+  );
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
-      <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <a
-          href="#hero"
-          className="flex items-center justify-center"
-        >
+      <div className="relative mx-auto flex max-w-6xl items-center px-6 py-3">
+        <a href="#hero" onClick={handleAnchorClick('#hero')} className="flex items-center justify-center">
           <img
             src={logoAsset}
             alt="Imagicity"
             className="block h-10 w-auto object-contain md:h-[60px]"
           />
         </a>
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="ml-6 hidden flex-1 items-center justify-start gap-5 md:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-4 py-2 text-xs uppercase tracking-[0.35em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
+              onClick={handleAnchorClick(link.href)}
+              className="rounded-full px-3 py-2 text-xs uppercase tracking-[0.28em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
             >
               {link.label}
             </a>
           ))}
-          <a
-            href="#contact"
-            className="rounded-full border border-scarlet px-5 py-2 text-xs uppercase tracking-[0.35em] text-white transition-colors hover:bg-aurum hover:text-black"
-          >
-            Engage
-          </a>
         </div>
         <button
           type="button"
@@ -577,24 +583,17 @@ function Navigation() {
                 Close
               </button>
             </div>
-            <div className="mt-10 flex flex-col gap-6">
+            <div className="mt-10 flex flex-col gap-5">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={handleNavClick}
-                  className="rounded-full px-4 py-2 text-sm uppercase tracking-[0.4em] text-white transition-colors hover:bg-aurum hover:text-black"
+                  onClick={handleAnchorClick(link.href)}
+                  className="rounded-full px-4 py-2 text-sm uppercase tracking-[0.35em] text-white transition-colors hover:bg-aurum hover:text-black"
                 >
                   {link.label}
                 </a>
               ))}
-              <a
-                href="#contact"
-                onClick={handleNavClick}
-                className="rounded-full border border-aurum px-5 py-2 text-xs uppercase tracking-[0.35em] text-aurum transition-colors hover:bg-aurum hover:text-black"
-              >
-                Engage
-              </a>
             </div>
           </motion.div>
         )}
@@ -606,6 +605,18 @@ function Navigation() {
 function MainSite() {
   const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
+
+  const handleSmoothAnchor = useCallback((event) => {
+    const href = event.currentTarget.getAttribute('href');
+    if (!href || !href.startsWith('#')) return;
+    event.preventDefault();
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+  }, []);
 
   const handleContactSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -712,7 +723,8 @@ function MainSite() {
               Strategy as weaponry, design as hypnosis, growth as the inevitable outcome. Welcome to the city where imagination compounds into market share.
             </motion.p>
             <motion.a
-              href="#contact"
+              href="#connect"
+              onClick={handleSmoothAnchor}
               whileHover={{ scale: 1.05, backgroundColor: '#FFD347', color: '#000000' }}
               whileTap={{ scale: 0.96 }}
               className="relative w-fit overflow-hidden rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition-colors"
@@ -841,84 +853,76 @@ function MainSite() {
 
         <FAQSection />
 
-        <section id="contact" className="py-24">
-          <div className="mx-auto max-w-4xl px-6">
+        <section id="connect" className="py-24">
+          <div className="mx-auto max-w-5xl px-6">
             <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
-              <p className="text-sm uppercase tracking-[0.4em] text-white/60">Contact</p>
-              <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Ready to build the thing everyone will pretend they believed in from day one?</h2>
-              <form className="mt-8 grid gap-6 md:grid-cols-2" onSubmit={handleContactSubmit}>
-                <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                  Name
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    placeholder="Your name"
-                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
+              <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] md:items-start">
+                <div className="space-y-4">
+                  <p className="text-sm uppercase tracking-[0.4em] text-white/60">Connect</p>
+                  <h2 className="text-3xl font-semibold md:text-4xl">Got an idea? Let’s make it loud.</h2>
+                </div>
+                <form className="grid gap-6 md:grid-cols-2" onSubmit={handleContactSubmit}>
+                  <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
+                    Name
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="Your name"
+                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
                     />
-                </label>
-                <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                  Email
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="you@company.com"
-                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                  />
-                </label>
-                <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                  Company
-                  <input
-                    type="text"
-                    name="company"
-                    id="company"
-                    placeholder="What are we building?"
-                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                  />
-                </label>
-                <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                  Message
-                  <textarea
-                    name="message"
-                    id="message"
-                    rows="4"
-                    placeholder="Pitch us the dream. We’ll sharpen it."
-                    className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                  />
-                </label>
-                <motion.button
-                  type="submit"
-                  whileHover={submissionStatus === 'sending' ? {} : { scale: 1.03, backgroundColor: '#FFD347', color: '#000000' }}
-                  whileTap={{ scale: 0.96 }}
-                  disabled={submissionStatus === 'sending'}
-                  className={`md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] transition-colors ${
-                    submissionStatus === 'sending' ? 'cursor-not-allowed bg-black/40 text-white/50' : 'text-white'
-                  }`}
-                >
-                  {submissionStatus === 'sending' ? 'Sending…' : 'Send Transmission'}
-                </motion.button>
-                {submissionMessage && (
-                  <p
-                    className={`md:col-span-2 text-sm ${
-                      submissionStatus === 'error' ? 'text-scarlet' : 'text-aurum'
+                  </label>
+                  <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
+                    Email
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="you@company.com"
+                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
+                    />
+                  </label>
+                  <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
+                    Company
+                    <input
+                      type="text"
+                      name="company"
+                      id="company"
+                      placeholder="What are we building?"
+                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
+                    />
+                  </label>
+                  <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
+                    Message
+                    <textarea
+                      name="message"
+                      id="message"
+                      rows="4"
+                      placeholder="Pitch us the dream. We’ll sharpen it."
+                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
+                    />
+                  </label>
+                  <motion.button
+                    type="submit"
+                    whileHover={submissionStatus === 'sending' ? {} : { scale: 1.03, backgroundColor: '#FFD347', color: '#000000' }}
+                    whileTap={{ scale: 0.96 }}
+                    disabled={submissionStatus === 'sending'}
+                    className={`md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] transition-colors ${
+                      submissionStatus === 'sending' ? 'cursor-not-allowed bg-black/40 text-white/50' : 'text-white'
                     }`}
                   >
-                    {submissionMessage}
-                  </p>
-                )}
-              </form>
-              <div className="mt-8 flex flex-wrap gap-4 text-sm uppercase tracking-[0.3em] text-white/60">
-                {socialPlatforms.map((platform) => (
-                  <a
-                    key={platform.name}
-                    href={platform.href}
-                    className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
-                  >
-                    {platform.icon({ className: 'h-4 w-4' })}
-                    <span className="sr-only">{platform.name}</span>
-                  </a>
-                ))}
+                    {submissionStatus === 'sending' ? 'Sending…' : 'Connect Today'}
+                  </motion.button>
+                  {submissionMessage && (
+                    <p
+                      className={`md:col-span-2 text-sm ${
+                        submissionStatus === 'error' ? 'text-scarlet' : 'text-aurum'
+                      }`}
+                    >
+                      {submissionMessage}
+                    </p>
+                  )}
+                </form>
               </div>
             </div>
           </div>
@@ -927,9 +931,25 @@ function MainSite() {
         <footer className="border-t border-white/10 py-12">
           <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
             <p>If you made it this far, you’re one of us.</p>
-            <a href="#pricing" className="inline-flex items-center rounded-full px-3 py-2 text-aurum transition-colors hover:bg-aurum hover:text-black">
+            <a
+              href="#pricing"
+              onClick={handleSmoothAnchor}
+              className="inline-flex items-center rounded-full px-3 py-2 text-aurum transition-colors hover:bg-aurum hover:text-black"
+            >
               Still looking for a price list? Fine. Click here.
             </a>
+          </div>
+          <div className="mx-auto mt-6 flex max-w-6xl flex-wrap gap-4 px-6 text-sm uppercase tracking-[0.3em] text-white/60 md:justify-end">
+            {socialPlatforms.map((platform) => (
+              <a
+                key={platform.name}
+                href={platform.href}
+                className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
+              >
+                {platform.icon({ className: 'h-4 w-4' })}
+                <span className="sr-only">{platform.name}</span>
+              </a>
+            ))}
           </div>
         </footer>
       </div>
