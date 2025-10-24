@@ -961,6 +961,18 @@ function MainSite() {
               </a>
             ))}
           </div>
+          <div className="mx-auto mt-6 flex max-w-6xl flex-wrap gap-4 px-6 text-sm uppercase tracking-[0.3em] text-white/60 md:justify-end">
+            {socialPlatforms.map((platform) => (
+              <a
+                key={platform.name}
+                href={platform.href}
+                className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
+              >
+                {platform.icon({ className: 'h-4 w-4' })}
+                <span className="sr-only">{platform.name}</span>
+              </a>
+            ))}
+          </div>
         </footer>
       </div>
     </div>
