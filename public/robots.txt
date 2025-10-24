@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Crawlers can access the entire site.
