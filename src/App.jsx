@@ -125,7 +125,8 @@ const teamMembers = [
     title: 'Founder & Brand Architect',
     handle: 'imagicity',
     status: 'Calibrating',
-    contactText: 'Coming Soon'
+    contactText: 'Coming Soon',
+    avatarUrl: '/diki.png'
   },
   {
     name: 'Experience Chief',
@@ -427,6 +428,7 @@ function TeamSection() {
               handle={member.handle}
               status={member.status}
               contactText={member.contactText}
+              avatarUrl={member.avatarUrl}
               showUserInfo={false}
               enableMobileTilt={false}
               className="h-full"
@@ -596,7 +598,7 @@ function Navigation() {
   );
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
+    <nav className="fixed left-0 right-0 top-0 z-30 bg-black md:bg-black/80 md:backdrop-blur-xl">
       <div className="relative mx-auto flex max-w-6xl items-center px-6 py-3 md:py-5">
         <a href="#hero" onClick={handleAnchorClick('#hero')} className="flex items-center justify-center">
           <img
