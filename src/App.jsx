@@ -1034,7 +1034,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0">
         <LiquidEther
           colors={['#5227FF', '#FF9FFC', '#B19EEF']}
           mouseForce={20}
@@ -1055,9 +1055,11 @@ export default function App() {
           style={{ width: '100%', height: '100%' }}
         />
       </div>
-      <AnimatePresence mode="wait">
-        {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
-      </AnimatePresence>
+      <div className="relative z-10">
+        <AnimatePresence mode="wait">
+          {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
