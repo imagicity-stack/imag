@@ -125,7 +125,8 @@ const teamMembers = [
     title: 'Founder & Brand Architect',
     handle: 'imagicity',
     status: 'Calibrating',
-    contactText: 'Coming Soon'
+    contactText: 'Coming Soon',
+    avatarUrl: '/diki.png'
   },
   {
     name: 'Experience Chief',
@@ -427,6 +428,7 @@ function TeamSection() {
               handle={member.handle}
               status={member.status}
               contactText={member.contactText}
+              avatarUrl={member.avatarUrl}
               showUserInfo={false}
               enableMobileTilt={false}
               className="h-full"
