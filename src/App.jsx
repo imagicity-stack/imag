@@ -804,6 +804,21 @@ function MainSite() {
           </motion.div>
         </section>
 
+        <section className="bg-white py-8">
+          <div className="marquee">
+            <div className="marquee__inner">
+              {[...marqueeSegments, ...marqueeSegments].map((text, index) => (
+                <span
+                  key={index}
+                  className="mx-12 whitespace-nowrap text-lg font-semibold tracking-wide text-black md:text-2xl"
+                >
+                  {text}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="services" className="py-24">
           <div className="mx-auto max-w-6xl px-6">
             <p className="text-sm uppercase tracking-[0.4em] text-white/60">Core Services</p>
