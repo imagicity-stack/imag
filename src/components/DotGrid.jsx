@@ -50,7 +50,9 @@ const DotGrid = ({
     speed: 0,
     lastTime: 0,
     lastX: 0,
-    lastY: 0
+    lastY: 0,
+    intensity: 0,
+    lastMove: 0
   });
   const lastFrameRef = useRef(0);
 
@@ -130,7 +132,20 @@ const DotGrid = ({
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const { x: px, y: py } = pointerRef.current;
+      const pointer = pointerRef.current;
+      const { x: px, y: py } = pointer;
+
+      const idleDelay = 0.35;
+      const fadeDuration = 0.7;
+      const rampDuration = 0.18;
+      const timeSinceMove = pointer.lastMove ? (now - pointer.lastMove) / 1000 : Infinity;
+      if (timeSinceMove > idleDelay) {
+        pointer.intensity = Math.max(0, pointer.intensity - delta / Math.max(fadeDuration, 0.2));
+      } else {
+        pointer.intensity = Math.min(1, pointer.intensity + delta / Math.max(rampDuration, 0.05));
+      }
+
+      const influence = pointer.intensity;
 
       for (const dot of dotsRef.current) {
         dot.targetX *= decay;
@@ -151,7 +166,7 @@ const DotGrid = ({
           const r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * t);
           const g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * t);
           const b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * t);
-          const alpha = Math.min(1, Math.max(0, t ** 1.2));
+          const alpha = Math.min(1, Math.max(0, t ** 1.2)) * influence;
           fillStyle = `rgba(${r},${g},${b},${alpha})`;
         }
 
@@ -216,6 +231,8 @@ const DotGrid = ({
       pointer.vx = vx;
       pointer.vy = vy;
       pointer.speed = speed;
+      pointer.lastMove = now;
+      pointer.intensity = 1;
 
       const rect = canvasRef.current?.getBoundingClientRect();
       if (!rect) return;
@@ -241,6 +258,11 @@ const DotGrid = ({
       const cx = event.clientX - rect.left;
       const cy = event.clientY - rect.top;
       const now = performance.now();
+      const pointer = pointerRef.current;
+      pointer.x = cx;
+      pointer.y = cy;
+      pointer.lastMove = now;
+      pointer.intensity = 1;
       for (const dot of dotsRef.current) {
         if (now - dot.cooldown < 120) continue;
         const dist = Math.hypot(dot.cx - cx, dot.cy - cy);
