@@ -117,6 +117,8 @@ const navLinks = [
   { label: 'Contact', href: '#contact' }
 ];
 
+const ENTRY_STORAGE_KEY = 'imagicity-entry-complete';
+
 const socialPlatforms = [
   { name: 'LinkedIn', href: '#', icon: (props) => (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -507,7 +509,7 @@ function PricingModal() {
 function Navigation() {
   const [open, setOpen] = useState(false);
 
-  const logoAsset = '/header.svg';
+  const logoAsset = 'https://drive.google.com/uc?export=view&id=14FFG3ZCxQ1-5GVjVg3NX8O7vpykYA52L';
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
@@ -520,7 +522,7 @@ function Navigation() {
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
-      <div className="relative mx-auto flex max-w-6xl items-center justify-center px-6 py-3 md:justify-between">
+      <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <a
           href="#hero"
           className="flex items-center justify-center"
@@ -528,7 +530,7 @@ function Navigation() {
           <img
             src={logoAsset}
             alt="Imagicity"
-            className="block h-12 w-auto object-contain sm:h-14 md:h-16"
+            className="block h-10 w-auto object-contain md:h-[60px]"
           />
         </a>
         <div className="hidden items-center gap-8 md:flex">
@@ -938,11 +940,26 @@ function MainSite() {
 export default function App() {
   const [entered, setEntered] = useState(false);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hasEntered = window.localStorage.getItem(ENTRY_STORAGE_KEY);
+    if (hasEntered === 'true') {
+      setEntered(true);
+    }
+  }, []);
+
+  const handleEntryComplete = () => {
+    setEntered(true);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(ENTRY_STORAGE_KEY, 'true');
+    }
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
       <DotBackdrop />
       <AnimatePresence mode="wait">
-        {!entered ? <EntryGate key="entry" onComplete={() => setEntered(true)} /> : <MainSite key="main" />}
+        {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
       </AnimatePresence>
     </div>
   );
