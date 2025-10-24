@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import DotGrid from './components/DotGrid';
 import ProfileCard from './components/ProfileCard';
 import SpotlightCard from './components/SpotlightCard';
 
@@ -198,24 +197,6 @@ function TypewriterText({ text, delay = 0, className = '' }) {
   return <span className={`tracking-tight ${className}`}>{displayed}</span>;
 }
 
-function DotBackdrop() {
-  return (
-    <div className="pointer-events-none fixed inset-0 z-0 bg-black">
-      <DotGrid
-        className="h-full w-full"
-        style={{ width: '100%', height: '100%' }}
-        dotSize={6}
-        gap={18}
-        baseColor="#A50000"
-        activeColor="#FFD347"
-        proximity={140}
-        shockRadius={220}
-        shockStrength={6}
-        returnDuration={1.4}
-      />
-    </div>
-  );
-}
 
 function EntryGate({ onComplete }) {
   const [stepIndex, setStepIndex] = useState(0);
@@ -1051,8 +1032,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
-      <DotBackdrop />
+    <div className="relative min-h-screen overflow-hidden bg-black text-white">
       <AnimatePresence mode="wait">
         {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
       </AnimatePresence>
