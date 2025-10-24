@@ -672,71 +672,39 @@ function MainSite() {
     setSubmissionStatus('sending');
     setSubmissionMessage('');
 
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const companyInput = document.getElementById('company');
-    const messageInput = document.getElementById('message');
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: (formData.get('name') || '').toString().trim(),
+      email: (formData.get('email') || '').toString().trim(),
+      company: (formData.get('company') || '').toString().trim(),
+      message: (formData.get('message') || '').toString().trim()
+    };
 
-    if (!nameInput || !emailInput || !companyInput || !messageInput) {
-      setSubmissionStatus('error');
-      setSubmissionMessage('The contact form failed to initialize. Refresh and try again.');
-      return;
-    }
-
-    nameInput.value = nameInput.value.trim();
-    emailInput.value = emailInput.value.trim();
-    companyInput.value = companyInput.value.trim();
-    messageInput.value = messageInput.value.trim();
-
-    if (!nameInput.value || !emailInput.value || !companyInput.value || !messageInput.value) {
+    if (!payload.name || !payload.email || !payload.company || !payload.message) {
       setSubmissionStatus('error');
       setSubmissionMessage('All fields are required before we make contact.');
       return;
     }
 
     try {
-      const response = await fetch(
-        'https://script.google.com/macros/s/AKfycby389hHjfwyYjceNjIw4PsFZiHoXL4NB0rPVfLZh2c0Mpxu42CWRA7ws5aCoeJ9zT06PA/exec',
+      await fetch(
+        'https://script.google.com/macros/s/AKfycbzhhovEXPs138JT9NHw-ZgXm-bYEkN73JAKQW2z1o6u87hP9QdOwNQm7dmYqmCbqkjn/exec',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({
-            name: nameInput.value,
-            email: emailInput.value,
-            company: companyInput.value,
-            message: messageInput.value
-          })
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         }
       );
 
-      const resultText = await response.text();
-      console.log('Server response:', resultText);
-
-      if (!response.ok) {
-        const statusMessage =
-          response.status === 403
-            ? 'The Apps Script returned HTTP 403. Ensure the deployment access level is set to "Anyone with the link".'
-            : `Received HTTP ${response.status} from the submission endpoint.`;
-        throw new Error(resultText || statusMessage);
-      }
-
-      console.log('Success');
       setSubmissionStatus('success');
-      setSubmissionMessage(resultText || 'Transmission received. Expect a response within 48 hours.');
-      e.currentTarget.reset();
+      form.reset();
+      window.alert('Message sent successfully!');
     } catch (err) {
       console.error('Submission failed:', err);
-      console.error('Error');
       setSubmissionStatus('error');
-
-      const message =
-        err instanceof Error && err.message.includes('Failed to fetch')
-          ? 'We could not reach the Apps Script endpoint. Confirm the deployment is accessible to Anyone with the link and that your network allows the request.'
-          : err instanceof Error
-          ? err.message
-          : 'An unknown error disrupted the signal.';
-
-      setSubmissionMessage(`Submission failed: ${message}`);
+      setSubmissionMessage('We could not submit your message. Please try again.');
     }
   }, []);
 
