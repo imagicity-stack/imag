@@ -497,7 +497,11 @@ function PricingModal() {
       {revealed && (
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
           Still curious?{' '}
-          <a href="#" className="rounded-full px-3 py-1 text-aurum transition-colors hover:bg-aurum hover:text-black">
+          <a
+            href="/teaser.png"
+            download="teaser.png"
+            className="rounded-full px-3 py-1 text-aurum transition-colors hover:bg-aurum hover:text-black"
+          >
             Download PDF price list
           </a>
         </div>
