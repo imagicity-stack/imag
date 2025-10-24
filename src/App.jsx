@@ -137,6 +137,15 @@ const teamMembers = [
     contactText: 'Contact Me',
     avatarUrl: '/lepomi.png',
     onContactClick: () => window.open('https://instagram.com/omi.sarthak', '_blank', 'noopener,noreferrer')
+  },
+  {
+    name: 'SHREY',
+    title: 'App/Web Developer',
+    handle: 'sshreysingh',
+    status: 'Online',
+    contactText: 'Contact Me',
+    avatarUrl: '/shrey.png',
+    onContactClick: () => window.open('https://instagram.com/sshreysingh', '_blank', 'noopener,noreferrer')
   }
 ];
 
@@ -392,8 +401,8 @@ function TeamSection() {
       <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
         <div className="max-w-2xl space-y-4">
           <p className="text-sm uppercase tracking-[0.4em] text-white/60">Team</p>
-          <h2 className="text-3xl font-semibold md:text-4xl">Dewesh Karan &amp; Sarthak</h2>
-          <p className="text-sm text-white/60">Creative Strategist &amp; Video Editor shaping the experience.</p>
+          <h2 className="text-3xl font-semibold md:text-4xl">Dewesh Karan, Sarthak &amp; SHREY</h2>
+          <p className="text-sm text-white/60">Creative Strategist, Video Editor &amp; App/Web Developer shaping the experience.</p>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {teamMembers.map((member) => (
