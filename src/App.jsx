@@ -520,15 +520,15 @@ function Navigation() {
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-30 bg-black/80 backdrop-blur-xl">
-      <div className="relative mx-auto flex max-w-6xl items-center px-6 py-4">
+      <div className="relative mx-auto flex max-w-6xl items-center justify-center px-6 py-3 md:justify-between">
         <a
           href="#hero"
-          className="mx-auto inline-flex items-center md:mx-0 md:mr-auto"
+          className="flex items-center justify-center"
         >
           <img
             src={logoAsset}
             alt="Imagicity"
-            className="h-10 w-auto md:h-12"
+            className="block h-12 w-auto object-contain sm:h-14 md:h-16"
           />
         </a>
         <div className="hidden items-center gap-8 md:flex">
