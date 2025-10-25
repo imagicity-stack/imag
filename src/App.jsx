@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import ProfileCard from './components/ProfileCard';
 import SpotlightCard from './components/SpotlightCard';
-import LiquidEther from './components/LiquidEther';
+import CursorDot from './components/CursorDot';
 
 const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
 
@@ -804,21 +804,6 @@ function MainSite() {
           </motion.div>
         </section>
 
-        <section className="bg-white py-8">
-          <div className="marquee">
-            <div className="marquee__inner">
-              {[...marqueeSegments, ...marqueeSegments].map((text, index) => (
-                <span
-                  key={index}
-                  className="mx-12 whitespace-nowrap text-lg font-semibold tracking-wide text-black md:text-2xl"
-                >
-                  {text}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section id="services" className="py-24">
           <div className="mx-auto max-w-6xl px-6">
             <p className="text-sm uppercase tracking-[0.4em] text-white/60">Core Services</p>
@@ -1035,27 +1020,15 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <div className="absolute inset-0">
-        <LiquidEther
-          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
-          mouseForce={20}
-          cursorSize={100}
-          isViscous={false}
-          viscous={30}
-          iterationsViscous={32}
-          iterationsPoisson={32}
-          resolution={0.5}
-          isBounce={false}
-          autoDemo={true}
-          autoSpeed={0.5}
-          autoIntensity={2.2}
-          takeoverDuration={0.25}
-          autoResumeDelay={3000}
-          autoRampDuration={0.6}
-          className="h-full w-full"
-          style={{ width: '100%', height: '100%' }}
-        />
-      </div>
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(82,39,255,0.25),transparent_45%)] bg-no-repeat"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(255,159,252,0.12),transparent_55%)] bg-no-repeat"
+        aria-hidden
+      />
+      <CursorDot />
       <div className="relative z-10">
         <AnimatePresence mode="wait">
           {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
