@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 # Crawlers can access the entire site.
+Sitemap: https://imagicity.in/sitemap.xml
