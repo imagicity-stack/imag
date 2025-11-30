@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-night text-white font-sans;
+}
+
+a {
+  @apply text-aurum hover:text-scarlet transition-colors;
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  @apply outline-none ring-2 ring-scarlet ring-offset-2 ring-offset-night;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  @apply text-white;
+}
+
+.prose p,
+.prose li {
+  @apply text-gray-200;
+}
+
+.prose strong {
+  @apply text-white;
+}
+
+.prose a {
+  @apply text-aurum;
+}
+
+.table-of-contents a {
+  @apply block py-1 text-sm text-gray-300 hover:text-aurum;
+}
