@@ -1,1041 +1,299 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+const navItems = ['Home', 'About', 'Services', 'Contact', 'Project', 'Project Details', 'Blog', 'Blog Details'];
 
-import ProfileCard from './components/ProfileCard';
-import SpotlightCard from './components/SpotlightCard';
-import CursorDot from './components/CursorDot';
-
-const rotatingWords = ['Design', 'Strategy', 'Growth', 'Reality'];
-
-const portfolioItems = [
-  {
-    title: 'NeuroPulse Labs',
-    description: 'AI-driven health diagnostics reimagined as a cultural movement.',
-    image:
-      'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Velvet Alley',
-    description: 'Luxury streetwear that bleeds rebellion into every seam.',
-    image:
-      'https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'MindSpring Academy',
-    description: 'A digital campus launch that made learning feel like a premiere night.',
-    image:
-      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'PulseFuel',
-    description: 'Clean energy drinks with a cult-worthy identity and launch playbook.',
-    image:
-      'https://images.unsplash.com/photo-1453227588063-bb302b62f50b?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Circuit Society',
-    description: 'From stealth startup to spotlight darling in six incendiary weeks.',
-    image:
-      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Bloom District',
-    description: 'Repositioned a boutique chain into a modern ritual for self-expression.',
-    image:
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80'
-  }
+const quickStats = [
+  { label: 'Research & Development', value: '265K+', tone: 'bg-[#efe0ff]' },
+  { label: 'Employees', value: '120+', tone: 'bg-[#ffe4bf]' },
+  { label: 'Community', value: '18 Cities', tone: 'bg-[#d8f2ff]' }
 ];
 
-const faqItems = [
-  { q: 'What exactly does IMAGICITY do?', a: 'We architect brand ecosystems—strategy, identity, campaigns, digital experiences, and the launch fuel to light them on fire.' },
-  { q: 'Do you only work with startups?', a: 'Startups, scaleups, rebels in disguise. If you want growth and a brand that actually converts, we talk.' },
-  { q: 'How fast can you build a brand?', a: 'Strategy sprints in 3 weeks. Full identity in 6. Go-to-market playbook in 8. Momentum? Continuous.' },
-  { q: 'Will you just make us a logo?', a: 'We could, but why waste our collective potential on a sticker when you need a movement?' },
-  { q: 'Do you offer retainers?', a: 'Yes. We become your fractional creative and growth command center when you want us around.' },
-  { q: 'How involved do we need to be?', a: 'We expect decision-makers in the room. Ghost clients get ghost results.' },
-  { q: 'Do you run ads too?', a: 'We plan, build, and optimize campaigns. Performance meets brand—because one without the other is just noise.' },
-  { q: 'Can you help us fundraise?', a: 'We craft decks, narratives, and launch sequences that make investors lean forward.' },
-  { q: 'Do you work internationally?', a: 'Yes. Cities, time zones, planets—it’s all remote anyway.' },
-  { q: 'What industries do you specialize in?', a: 'Tech, retail, education, lifestyle, and any space where imagination creates unfair advantage.' },
-  { q: 'What does collaboration look like?', a: 'Weekly war-room reviews, async updates, and a shared roadmap that keeps momentum ruthless.' },
-  { q: 'Can we hire you just for strategy?', a: 'Absolutely. Strategy first, execution if you want to keep the fire burning.' },
-  { q: 'Who will we be working with?', a: 'A core team of brand strategists, designers, growth engineers, and campaign producers.' },
-  { q: 'How do you measure success?', a: 'Pipeline growth, conversion lifts, product adoption, cultural impact. Vanity metrics go in the shredder.' },
-  { q: 'What does onboarding look like?', a: 'A diagnostic sprint that dissects your market, your product, and your customers’ psychology.' },
-  { q: 'How custom is the work?', a: 'No templates. Each build is engineered around your positioning, product, and north-star metrics.' },
-  { q: 'Do you integrate with in-house teams?', a: 'We embed as partners—Slack, Notion, Figma, whatever keeps collaboration ferocious.' },
-  { q: 'What tools do you use?', a: 'From Figma to Webflow to custom stacks. The tool is irrelevant; the outcome isn’t.' },
-  { q: 'What if we already have a brand?', a: 'Perfect. We audit, evolve, and reignite. Legacy is only useful if it still bites.' },
-  { q: 'Can you fix our website?', a: 'We can overhaul it into an experience that actually sells. Otherwise, keep the digital brochure.' },
-  { q: 'Do you handle content?', a: 'Yes—campaign scripts, social narratives, launch stories that cut through feed fatigue.' },
-  { q: 'What’s your communication style?', a: 'Radically honest, relentlessly constructive, always aligned to outcomes.' },
-  { q: 'Are we a good fit?', a: 'If you’re ambitious, resilient, and allergic to average—yes. If you just want a logo, probably not.' },
-  { q: 'What happens after launch?', a: 'Optimization sprints, performance tracking, iteration loops. Launch day is the starting line.' },
-  { q: 'How do we start?', a: 'Fill out the form below. We’ll respond with a diagnostic call invite within 48 hours.' }
+const serviceCards = [
+  { title: 'Website & App', desc: 'Modern, responsive experiences that turn visitors into loyal fans.', tone: 'bg-[#f7d1d6]' },
+  { title: 'Marketing', desc: 'Campaigns that feel human and still hit the metrics.', tone: 'bg-[#ffe6c7]' },
+  { title: 'Branding Strategy', desc: 'Names, voice, and visual systems crafted for longevity.', tone: 'bg-[#d9d9f9]' },
+  { title: 'Digital Experience', desc: 'From touchpoints to flows, we choreograph the journey.', tone: 'bg-[#f8efb8]' }
 ];
 
-const entrySteps = [
-  {
-    id: 'instagram',
-    question: 'Or you just want something that looks cool on Instagram?',
-    options: [
-      { label: 'I just want it to look cool.', value: 'cool' },
-      { label: 'I actually want to build something real.', value: 'real' }
-    ],
-    responses: {
-      cool: 'Cool doesn\'t convert, bugger.',
-      real: 'Finally, someone who gets it.'
-    }
-  },
-  {
-    id: 'plan',
-    question: 'Do you have a real plan?',
-    options: [
-      { label: 'Kinda.', value: 'kinda' },
-      { label: 'No idea.', value: 'none' },
-      { label: 'I\'m here to figure that out.', value: 'figure' }
-    ],
-    responses: {
-      kinda: 'Kinda isn\'t a strategy.',
-      none: 'Then why are you here?',
-      figure: 'Good. That\'s where we come in.'
-    }
-  }
+const insightCards = [
+  { title: 'Save 15%', note: 'Conversion uplift', tone: 'bg-[#fdf3cf]' },
+  { title: '+260K', note: 'New subscribers', tone: 'bg-[#f0dcff]' }
 ];
 
-const glitchFrames = [
-  'drop-shadow(0 0 12px rgba(165, 0, 0, 0.65))',
-  'drop-shadow(0 0 18px rgba(165, 0, 0, 0.85))',
-  'drop-shadow(0 0 24px rgba(255, 211, 71, 0.5))'
-];
-
-const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Team', href: '#team' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Connect', href: '#connect' }
-];
-
-const marqueeText = 'IF THIS TEXT MADE YOU STOP IMAGINE WHAT WE’LL DO TO YOUR AUDIENCE';
-const marqueeSegments = Array.from({ length: 4 }, () => marqueeText);
-
-const teamMembers = [
-  {
-    name: 'Dewesh Karan',
-    title: 'Creative Strategist',
-    handle: 'akadikii',
-    status: 'Online',
-    contactText: 'Contact Me',
-    avatarUrl: '/diki.png',
-    onContactClick: () => window.open('https://instagram.com/akadikii', '_blank', 'noopener,noreferrer')
-  },
-  {
-    name: 'Sarthak',
-    title: 'Video Editor',
-    handle: 'omi.sarthak',
-    status: 'Online',
-    contactText: 'Contact Me',
-    avatarUrl: '/lepomi.png',
-    onContactClick: () => window.open('https://instagram.com/omi.sarthak', '_blank', 'noopener,noreferrer')
-  },
-  {
-    name: 'SHREY',
-    title: 'App/Web Developer',
-    handle: 'sshreysingh',
-    status: 'Online',
-    contactText: 'Contact Me',
-    avatarUrl: '/shrey.png',
-    onContactClick: () => window.open('https://instagram.com/sshreysingh', '_blank', 'noopener,noreferrer')
-  }
-];
-
-const ENTRY_STORAGE_KEY = 'imagicity-entry-complete';
-
-const socialPlatforms = [
-  { name: 'LinkedIn', href: '#', icon: (props) => (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-        <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm.02 6.5h4v11h-4V10Z" />
-        <path d="M14 10h3.64v1.71h.05c.51-.96 1.76-1.96 3.63-1.96 3.88 0 4.6 2.45 4.6 5.63V21h-4v-4.91c0-1.17-.02-2.68-1.63-2.68-1.63 0-1.88 1.27-1.88 2.58V21h-4V10Z" />
-      </svg>
-    ) },
-  { name: 'Behance', href: '#', icon: (props) => (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-        <path d="M5.3 7.2H9c2 0 3.4 1 3.4 2.7 0 1.1-.6 1.9-1.6 2.2v.1c1.3.2 2.2 1.2 2.2 2.6 0 2-1.7 3.3-4.3 3.3H2V7.2h3.3Zm-.1 4.1h3.1c1 0 1.6-.5 1.6-1.3 0-.9-.6-1.3-1.6-1.3H5.2v2.6Zm0 4.8h3.3c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5H5.2v3Zm12.6-9.1c2.7 0 4.2 1.5 4.4 3.2h-3.1c-.2-.7-.7-1.2-1.3-1.2-1.2 0-1.8 1.1-1.8 2.6 0 1.6.7 2.7 1.8 2.7.8 0 1.3-.5 1.5-1.3h3.1c-.3 1.9-1.9 3.3-4.6 3.3-3 0-4.9-2-4.9-4.8 0-2.8 1.8-4.8 4.9-4.8Zm-2.4-.9h4.9V8h-4.9V6.1Z" />
-      </svg>
-    ) },
-  { name: 'Dribbble', href: '#', icon: (props) => (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.6 6.4a7.5 7.5 0 0 1-3.4 1.2c-.3-.6-.7-1.3-1.1-1.9 1.6-.6 3-.7 4.5-.7ZM9.2 3.7c1 .1 2 .4 3 .9-.4.2-1.6.7-3 1.1a30 30 0 0 1-1.5-2c.5-.1 1-.1 1.5 0ZM6.4 4.7c.6.8 1.2 1.7 1.8 2.6-1.5.4-3 .6-4.3.6a7.5 7.5 0 0 1 2.5-3.2ZM4 12v-.3c1.7 0 3.6-.3 5.4-.8.2.4.5.9.7 1.3-2.3.7-4.3 1.8-5.6 3.3A7.4 7.4 0 0 1 4 12Zm3 5.4c1.1-1.3 2.6-2.3 4.6-2.9.6 1.6 1 3.5 1.3 5.6a7.5 7.5 0 0 1-5.9-2.7Zm7.8 2.2c-.3-1.8-.7-3.5-1.2-4.9 1.5-.2 3.2-.2 5 .3a7.5 7.5 0 0 1-3.8 4.6Zm-2.4-6.6-.4-1c1.6-.2 3-.6 4.2-1.1.3.6.6 1.2.8 1.8-1.6-.3-3.2-.2-4.6.3Z" />
-      </svg>
-    ) },
-  { name: 'Instagram', href: '#', icon: (props) => (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2.5A2.5 2.5 0 0 0 4.5 7v10A2.5 2.5 0 0 0 7 19.5h10a2.5 2.5 0 0 0 2.5-2.5V7A2.5 2.5 0 0 0 17 4.5H7Zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Zm0 2.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6.2-3.6a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0Z" />
-      </svg>
-    ) }
-];
-
-function TypewriterText({ text, delay = 0, className = '' }) {
-  const [displayed, setDisplayed] = useState('');
-
-  useEffect(() => {
-    setDisplayed('');
-    let interval;
-    const timeout = setTimeout(() => {
-      let index = 0;
-      interval = setInterval(() => {
-        setDisplayed(text.slice(0, index + 1));
-        index += 1;
-        if (index >= text.length) {
-          clearInterval(interval);
-        }
-      }, 25);
-    }, delay);
-    return () => {
-      clearTimeout(timeout);
-      if (interval) clearInterval(interval);
-    };
-  }, [text, delay]);
-
-  return <span className={`tracking-tight ${className}`}>{displayed}</span>;
-}
-
-
-function EntryGate({ onComplete }) {
-  const [stepIndex, setStepIndex] = useState(0);
-  const [showSecondLine, setShowSecondLine] = useState(false);
-  const [feedback, setFeedback] = useState('');
-  const [isLocked, setIsLocked] = useState(false);
-  const [glitching, setGlitching] = useState(false);
-
-  useEffect(() => {
-    if (stepIndex === 0) {
-      const timer = setTimeout(() => setShowSecondLine(true), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [stepIndex]);
-
-  const handleOptionClick = (value) => {
-    if (isLocked) return;
-    setIsLocked(true);
-    const current = entrySteps[stepIndex - 1];
-    setFeedback(current.responses[value]);
-    setTimeout(() => {
-      setFeedback('');
-      setIsLocked(false);
-      setStepIndex((prev) => prev + 1);
-    }, 1700);
-  };
-
-  const handleEnter = () => {
-    if (glitching) return;
-    setGlitching(true);
-    setTimeout(() => {
-      onComplete();
-    }, 750);
-  };
-
+function DotIcon({ className }) {
   return (
-    <div className="relative z-10 min-h-screen w-full overflow-hidden text-white">
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center">
-        <AnimatePresence mode="wait">
-          {stepIndex === 0 && (
-            <motion.div
-              key="intro"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-6"
-            >
-              <p className="text-3xl font-semibold md:text-5xl">
-                <TypewriterText text="Hold up." />
-              </p>
-              {showSecondLine && (
-                <p className="text-xl text-white/80 md:text-2xl">
-                  <TypewriterText text="You think you’re ready to build a brand?" />
-                </p>
-              )}
-              {showSecondLine && (
-                <motion.button
-                  onClick={() => setStepIndex(1)}
-                  className="mt-6 rounded-full border border-scarlet px-6 py-3 text-sm uppercase tracking-[0.3em] text-white/80 transition-colors"
-                  whileHover={{ backgroundColor: '#FFD347', color: '#000000', scale: 1.05 }}
-                  whileTap={{ scale: 0.96 }}
-                >
-                  Continue
-                </motion.button>
-              )}
-            </motion.div>
-          )}
-
-          {stepIndex > 0 && stepIndex <= entrySteps.length && (
-            <motion.div
-              key={entrySteps[stepIndex - 1].id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.6 }}
-              className="max-w-xl space-y-8"
-            >
-              <p className="text-2xl font-semibold md:text-4xl">
-                <TypewriterText key={entrySteps[stepIndex - 1].question} text={entrySteps[stepIndex - 1].question} />
-              </p>
-              <div className="flex flex-col items-center gap-4">
-                {entrySteps[stepIndex - 1].options.map((option) => (
-                  <motion.button
-                    key={option.value}
-                    onClick={() => handleOptionClick(option.value)}
-                    className="w-full max-w-md rounded-full border border-white/20 px-6 py-4 text-lg font-medium text-white/80 transition-colors hover:border-aurum"
-                    whileHover={{ scale: 1.02, backgroundColor: '#FFD347', color: '#000000' }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    {option.label}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {feedback && (
-                  <motion.p
-                    key={feedback}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-lg text-aurum"
-                  >
-                    <TypewriterText text={feedback} />
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
-
-          {stepIndex > entrySteps.length && (
-            <motion.div
-              key="final"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-5"
-            >
-              <p className="text-xl uppercase tracking-[0.35em] text-white/60">You survived the audit.</p>
-              <p className="text-3xl font-semibold md:text-5xl">Now enter the city where brands are imagined.</p>
-              <motion.button
-                onClick={handleEnter}
-                className="relative overflow-hidden rounded-full border border-scarlet px-8 py-4 text-lg font-semibold uppercase tracking-[0.3em] transition-colors"
-                animate={
-                  glitching
-                    ? { filter: glitchFrames, scale: [1, 1.04, 0.98, 1.02, 1] }
-                    : { filter: 'drop-shadow(0 0 0 rgba(0,0,0,0))', scale: 1 }
-                }
-                transition={{ duration: glitching ? 0.6 : 0.3, repeat: glitching ? Infinity : 0, repeatType: 'mirror' }}
-                whileHover={{ backgroundColor: '#FFD347', color: '#000000', scale: 1.05 }}
-              >
-                Enter IMAGICITY
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+    <svg viewBox="0 0 8 8" className={className} aria-hidden="true">
+      <circle cx="4" cy="4" r="3" fill="currentColor" />
+    </svg>
   );
 }
 
-function RotatingWords() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % rotatingWords.length);
-    }, 2200);
-    return () => clearInterval(interval);
-  }, []);
-
+function FlowerIcon({ className }) {
   return (
-    <div className="relative h-12 overflow-hidden text-2xl font-medium sm:text-3xl">
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={rotatingWords[index]}
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -30, opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-x-0 text-aurum"
-        >
-          {rotatingWords[index]}.
-        </motion.span>
-      </AnimatePresence>
-    </div>
+    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+      <circle cx="32" cy="32" r="10" fill="#1f1f1f" />
+      {[0, 60, 120, 180, 240, 300].map((deg) => (
+        <ellipse
+          key={deg}
+          cx="32"
+          cy="10"
+          rx="10"
+          ry="16"
+          fill="#ff9f5a"
+          transform={`rotate(${deg} 32 32)`}
+        />
+      ))}
+    </svg>
   );
 }
 
-function ServiceCard({ title, description, index }) {
+function RibbonIcon({ className }) {
   return (
-    <motion.div
-      className="transition"
-      whileHover={{ rotateX: 4, rotateY: -4, translateY: -6 }}
-      style={{ transformOrigin: 'center center' }}
-      transition={{ type: 'spring', stiffness: 200, damping: 16 }}
-    >
-      <SpotlightCard
-        className="group flex h-full flex-col gap-3 backdrop-blur"
-        style={{
-          '--spotlight-border': '1px solid rgba(255, 255, 255, 0.1)',
-          '--spotlight-bg': 'rgba(0, 0, 0, 0.65)',
-          '--spotlight-padding': '2rem'
-        }}
-      >
-        <span className="text-sm uppercase tracking-[0.35em] text-white/50">{String(index + 1).padStart(2, '0')}</span>
-        <h3 className="text-2xl font-semibold text-white">{title}</h3>
-        <p className="text-sm text-white/70">{description}</p>
-        <span className="mt-auto text-xs uppercase tracking-[0.3em] text-aurum opacity-0 transition-opacity group-hover:opacity-100">Unpack →</span>
-      </SpotlightCard>
-    </motion.div>
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M24 4l5 11 12 2-9 9 2 13-10-6-10 6 2-13-9-9 12-2 5-11z" fill="#1f1f1f" />
+    </svg>
   );
 }
 
-function TeamSection() {
+function ArrowBadge({ className }) {
   return (
-    <section id="team" className="mx-auto max-w-6xl px-6 py-24">
-      <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
-        <div className="max-w-2xl space-y-4">
-          <p className="text-sm uppercase tracking-[0.4em] text-white/60">Team</p>
-          <h2 className="text-3xl font-semibold md:text-4xl">Dewesh Karan, Sarthak &amp; SHREY</h2>
-          <p className="text-sm text-white/60">Creative Strategist, Video Editor &amp; App/Web Developer shaping the experience.</p>
+    <svg viewBox="0 0 36 36" className={className} aria-hidden="true">
+      <rect x="2" y="2" width="32" height="32" rx="16" fill="#1f1f1f" />
+      <path d="M12 18h12m-4-4 4 4-4 4" stroke="#fbe8a2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PreviewCard({ title, subtitle, className, children }) {
+  return (
+    <article className={`rounded-[28px] p-6 shadow-[0_18px_0_rgba(0,0,0,0.08)] ${className}`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-black/60">{title}</p>
+          {subtitle && <h3 className="mt-2 text-xl font-semibold text-[#1f1f1f]">{subtitle}</h3>}
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {teamMembers.map((member) => (
-            <ProfileCard
-              key={member.name}
-              name={member.name}
-              title={member.title}
-              handle={member.handle}
-              status={member.status}
-              contactText={member.contactText}
-              avatarUrl={member.avatarUrl}
-              showUserInfo
-              onContactClick={member.onContactClick}
-              enableMobileTilt={false}
-              className="h-full"
-            />
-          ))}
-        </div>
+        <ArrowBadge className="h-10 w-10" />
       </div>
-    </section>
+      <div className="mt-6">{children}</div>
+    </article>
   );
 }
 
-function FAQItem({ item }) {
-  const [open, setOpen] = useState(false);
-
+export default function Home() {
   return (
-    <div className="group border-b border-white/10 py-4">
-      <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-lg font-semibold text-white transition-colors hover:bg-aurum hover:text-black"
-      >
-        <span>{item.q}</span>
-        <motion.span
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ duration: 0.25 }}
-          className="text-aurum transition-colors group-hover:text-black"
-        >
-          +
-        </motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.p
-            key="content"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mt-4 text-sm text-white/70"
-          >
-            {item.a}
-          </motion.p>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function FAQSection() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <section id="faq" className="mx-auto max-w-4xl px-6 py-24">
-      <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
-        <button
-          onClick={() => setOpen((prev) => !prev)}
-          className="group flex w-full items-center justify-between rounded-full px-4 py-2 text-left text-sm uppercase tracking-[0.35em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
-        >
-          <span>Faq — the answers you asked for (and some you didn’t)</span>
-          <motion.span animate={{ rotate: open ? 0 : -90 }} transition={{ duration: 0.3 }} className="text-aurum transition-colors group-hover:text-black">
-            ⇲
-          </motion.span>
-        </button>
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.div
-              key="faq-group"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.4 }}
-              className="mt-8 divide-y divide-white/10"
-            >
-              {faqItems.map((item) => (
-                <FAQItem key={item.q} item={item} />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </section>
-  );
-}
-
-function PricingModal() {
-  const [open, setOpen] = useState(false);
-  const [revealed, setRevealed] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-    setRevealed(true);
-  };
-
-  return (
-    <div className="mt-8 space-y-4">
-      <motion.button
-        onClick={handleOpen}
-        whileTap={{ scale: 0.96 }}
-        className="rounded-full border border-white/20 px-6 py-3 text-xs uppercase tracking-[0.35em] text-white/80 transition-colors hover:border-aurum"
-        whileHover={{ scale: 1.05, backgroundColor: '#FFD347', color: '#000000' }}
-      >
-        Ask About Pricing
-      </motion.button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="mx-auto max-w-md rounded-2xl border border-white/10 bg-plum/50 p-6 text-left shadow-lg"
-          >
-            <p className="text-lg font-semibold text-aurum">Bugger, pricing already? Let’s talk first.</p>
-            <p className="mt-4 text-sm text-white/70">
-              Every engagement is tailored. Give us the context, and we’ll build an investment that earns itself back.
-            </p>
-            <button
-              onClick={() => setOpen(false)}
-              className="mt-6 rounded-full px-4 py-2 text-xs uppercase tracking-[0.4em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
-            >
-              Close
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {revealed && (
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
-          Still curious?{' '}
-          <a
-            href="/teaser.png"
-            download="teaser.png"
-            className="rounded-full px-3 py-1 text-aurum transition-colors hover:bg-aurum hover:text-black"
-          >
-            Download PDF price list
-          </a>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Navigation() {
-  const [open, setOpen] = useState(false);
-
-  const logoAsset = '/logo.png';
-
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  const handleNavClick = useCallback(() => setOpen(false), []);
-
-  const handleAnchorClick = useCallback(
-    (href) => (event) => {
-      event.preventDefault();
-      handleNavClick();
-      if (typeof window === 'undefined' || typeof document === 'undefined') return;
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-      }
-    },
-    [handleNavClick]
-  );
-
-  return (
-    <nav className="fixed left-0 right-0 top-0 z-30 bg-black md:bg-black/80 md:backdrop-blur-xl">
-      <div className="relative mx-auto flex max-w-6xl items-center px-6 py-3 md:py-5">
-        <a href="#hero" onClick={handleAnchorClick('#hero')} className="flex items-center justify-center">
-          <img
-            src={logoAsset}
-            alt="Imagicity"
-            className="block h-10 w-auto object-contain md:h-[60px]"
-          />
-        </a>
-        <div className="ml-6 hidden flex-1 items-center justify-start gap-5 md:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={handleAnchorClick(link.href)}
-              className="rounded-full px-3 py-2 text-xs uppercase tracking-[0.28em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
-            >
-              {link.label}
+    <main className="min-h-screen bg-[#2f3b1f] px-4 py-10 text-[#1f1f1f] md:px-10">
+      <header className="mx-auto max-w-6xl">
+        <h1 className="text-4xl font-black uppercase tracking-tight text-[#f6e7c1] sm:text-5xl md:text-6xl">
+          Full web page preview
+        </h1>
+        <nav className="mt-4 flex flex-wrap gap-4 text-sm text-[#d4c4a2]">
+          {navItems.map((item) => (
+            <a key={item} className="flex items-center gap-2" href="#">
+              <DotIcon className="h-2 w-2 text-[#d4c4a2]" />
+              <span className="uppercase tracking-[0.22em]">{item}</span>
             </a>
           ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => setOpen((prev) => !prev)}
-          className="group absolute right-6 top-1/2 flex h-10 w-10 -translate-y-1/2 flex-col items-center justify-center gap-1.5 rounded-full border border-white/20 text-white transition-colors hover:bg-aurum hover:text-black md:hidden"
-        >
-          <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
-          <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
-          <span className="h-0.5 w-6 bg-white transition-colors group-hover:bg-black" />
-        </button>
-      </div>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-            className="fixed inset-y-0 right-0 z-40 w-64 bg-black p-8 text-right shadow-2xl md:hidden"
-          >
-            <div className="flex justify-end">
-              <button
-                onClick={() => setOpen(false)}
-                className="rounded-full px-3 py-1 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:bg-aurum hover:text-black"
-              >
-                Close
-              </button>
-            </div>
-            <div className="mt-10 flex flex-col gap-5">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={handleAnchorClick(link.href)}
-                  className="rounded-full px-4 py-2 text-sm uppercase tracking-[0.35em] text-white transition-colors hover:bg-aurum hover:text-black"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-}
+        </nav>
+      </header>
 
-function MainSite() {
-  const [submissionStatus, setSubmissionStatus] = useState('idle');
-  const [submissionMessage, setSubmissionMessage] = useState('');
-
-  const handleSmoothAnchor = useCallback((event) => {
-    const href = event.currentTarget.getAttribute('href');
-    if (!href || !href.startsWith('#')) return;
-    event.preventDefault();
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-    }
-  }, []);
-
-  const handleContactSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setSubmissionStatus('sending');
-    setSubmissionMessage('');
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const payload = {
-      name: (formData.get('name') || '').toString().trim(),
-      email: (formData.get('email') || '').toString().trim(),
-      company: (formData.get('company') || '').toString().trim(),
-      message: (formData.get('message') || '').toString().trim()
-    };
-
-    if (!payload.name || !payload.email || !payload.company || !payload.message) {
-      setSubmissionStatus('error');
-      setSubmissionMessage('All fields are required before we make contact.');
-      return;
-    }
-
-    try {
-      await fetch(
-        'https://script.google.com/macros/s/AKfycbzhhovEXPs138JT9NHw-ZgXm-bYEkN73JAKQW2z1o6u87hP9QdOwNQm7dmYqmCbqkjn/exec',
-        {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      setSubmissionStatus('success');
-      form.reset();
-      window.alert('Message sent successfully!');
-    } catch (err) {
-      console.error('Submission failed:', err);
-      setSubmissionStatus('error');
-      setSubmissionMessage('We could not submit your message. Please try again.');
-    }
-  }, []);
-
-  return (
-    <div className="relative z-10 text-white">
-      <Navigation />
-      <div className="relative z-10">
-        <header id="hero" className="relative overflow-hidden pt-24">
-          <div className="relative mx-auto flex min-h-[90vh] max-w-6xl flex-col justify-center gap-10 px-6 py-24">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="text-sm uppercase tracking-[0.4em] text-white/60"
-            >
-              IMAGICITY / Brand Strategy Lab
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-4xl font-semibold md:text-6xl lg:text-7xl"
-            >
-              We Build Brands That Scale.
-            </motion.h1>
-            <RotatingWords />
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="max-w-xl text-lg text-white/70"
-            >
-              Strategy as weaponry, design as hypnosis, growth as the inevitable outcome. Welcome to the city where imagination compounds into market share.
-            </motion.p>
-            <motion.a
-              href="#connect"
-              onClick={handleSmoothAnchor}
-              whileHover={{ scale: 1.05, backgroundColor: '#FFD347', color: '#000000' }}
-              whileTap={{ scale: 0.96 }}
-              className="relative w-fit overflow-hidden rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] text-white transition-colors"
-            >
-              Let’s Build Together
-            </motion.a>
-          </div>
-        </header>
-
-        <section className="bg-white py-4">
-          <div className="marquee">
-            <div className="marquee__inner">
-              {[...marqueeSegments, ...marqueeSegments].map((text, index) => (
-                <span
-                  key={index}
-                  className="mx-12 whitespace-nowrap text-lg font-semibold tracking-wide text-black md:text-2xl"
-                >
-                  {text}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="about" className="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-2">
-          <motion.div
-            className="relative overflow-hidden rounded-3xl border border-white/10 bg-plum/30"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,211,71,0.3),transparent_70%)] opacity-40" />
-            <video
-              className="relative z-10 h-full w-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4"
-            />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="space-y-6"
-          >
-            <p className="text-sm uppercase tracking-[0.4em] text-white/60">About</p>
-            <h2 className="text-3xl font-semibold md:text-4xl">
-              IMAGICITY started as a design agency. Now, it’s a startup powerhouse that turns ideas into funded, scalable realities.
-            </h2>
-            <p className="text-base text-white/70">
-              We weaponize insight, aesthetics, and momentum. The playbook is surgical: diagnose, design, deploy, dominate. If you want a pretty logo, hire a freelancer. If you want a movement, enter the city.
-            </p>
-          </motion.div>
-        </section>
-
-        <section id="services" className="py-24">
-          <div className="mx-auto max-w-6xl px-6">
-            <p className="text-sm uppercase tracking-[0.4em] text-white/60">Core Services</p>
-            <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Choose your weapons.</h2>
-            <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {[
-                {
-                  title: 'Go-To-Market Strategy',
-                  description: 'Market mapping, positioning, and launch sequencing engineered for traction.'
-                },
-                {
-                  title: 'Brand Identity Design',
-                  description: 'Systems, story, and style so consistent it hurts your competitors.'
-                },
-                {
-                  title: 'Campaign Planning',
-                  description: 'Narratives, activations, and media orchestration tuned for obsession.'
-                },
-                {
-                  title: 'Digital Marketing',
-                  description: 'Full-funnel acquisition sprints that trade impressions for conversions.'
-                },
-                {
-                  title: 'UI/UX + Web Development',
-                  description: 'Immersive product and web experiences that guide behaviour.'
-                },
-                {
-                  title: 'Growth Advisory',
-                  description: 'On-call partnership aligning teams, tooling, and velocity.'
-                }
-              ].map((service, index) => (
-                <ServiceCard key={service.title} index={index} {...service} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="pricing" className="mx-auto max-w-4xl px-6 py-24">
-          <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
-            <p className="text-sm uppercase tracking-[0.4em] text-white/60">Pricing</p>
-            <h2 className="mt-4 text-3xl font-semibold md:text-4xl">You want numbers. We want context.</h2>
-            <PricingModal />
-          </div>
-        </section>
-
-        <section id="portfolio" className="mx-auto max-w-6xl px-6 py-24">
-          <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
-            <div className="max-w-2xl">
-              <p className="text-sm uppercase tracking-[0.4em] text-white/60">Portfolio</p>
-              <h2 className="mt-3 text-3xl font-semibold md:text-4xl">Where imagination hit the market.</h2>
-              <p className="mt-4 text-sm text-white/60">
-                No filters, no fluff—just a taste of the builds that lit up their sectors.
-              </p>
-            </div>
-            <motion.div layout className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {portfolioItems.map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.4, delay: index * 0.04 }}
-                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-plum/40"
-                >
-                  <div
-                    className="aspect-square w-full bg-cover bg-center opacity-80 transition-opacity duration-300 group-hover:opacity-60"
-                    style={{ backgroundImage: `url(${item.image})` }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 space-y-2 bg-gradient-to-t from-black/85 via-black/60 to-transparent p-4">
-                    <h3 className="text-lg font-semibold">{item.title}</h3>
-                    <p className="text-xs text-white/70">{item.description}</p>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center bg-aurum/90 text-black opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <p className="text-xs font-semibold uppercase tracking-[0.4em]">View Case</p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
-        <TeamSection />
-
-        <FAQSection />
-
-        <section id="connect" className="py-24">
-          <div className="mx-auto max-w-5xl px-6">
-            <div className="rounded-3xl border border-white/10 p-10 backdrop-blur">
-              <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] md:items-start">
-                <div className="space-y-4">
-                  <p className="text-sm uppercase tracking-[0.4em] text-white/60">Connect</p>
-                  <h2 className="text-3xl font-semibold md:text-4xl">Got an idea? Let’s make it loud.</h2>
+      <section className="mx-auto mt-10 grid max-w-6xl gap-6 lg:grid-cols-2">
+        <div className="space-y-6">
+          <PreviewCard title="Home" subtitle="Co.mind" className="bg-[#f2d6d4]">
+            <div className="flex flex-col gap-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-4xl font-black tracking-tight text-[#1f1f1f]">CO.MIND</h2>
+                  <p className="mt-2 max-w-xs text-sm text-black/70">
+                    Co.mind is a creative agency specializing in web, branding, and digital marketing.
+                  </p>
                 </div>
-                <form className="grid gap-6 md:grid-cols-2" onSubmit={handleContactSubmit}>
-                  <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                    Name
-                    <input
-                      type="text"
-                      name="name"
-                      id="name"
-                      placeholder="Your name"
-                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                    Email
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      placeholder="you@company.com"
-                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                    />
-                  </label>
-                  <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                    Company
-                    <input
-                      type="text"
-                      name="company"
-                      id="company"
-                      placeholder="What are we building?"
-                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                    />
-                  </label>
-                  <label className="md:col-span-2 flex flex-col gap-2 text-sm uppercase tracking-[0.3em] text-white/60">
-                    Message
-                    <textarea
-                      name="message"
-                      id="message"
-                      rows="4"
-                      placeholder="Pitch us the dream. We’ll sharpen it."
-                      className="rounded-lg border border-white/15 bg-black/70 px-4 py-3 text-base text-white focus:border-aurum focus:outline-none"
-                    />
-                  </label>
-                  <motion.button
-                    type="submit"
-                    whileHover={submissionStatus === 'sending' ? {} : { scale: 1.03, backgroundColor: '#FFD347', color: '#000000' }}
-                    whileTap={{ scale: 0.96 }}
-                    disabled={submissionStatus === 'sending'}
-                    className={`md:col-span-2 rounded-full border border-scarlet px-10 py-4 text-sm uppercase tracking-[0.35em] transition-colors ${
-                      submissionStatus === 'sending' ? 'cursor-not-allowed bg-black/40 text-white/50' : 'text-white'
-                    }`}
-                  >
-                    {submissionStatus === 'sending' ? 'Sending…' : 'Connect Today'}
-                  </motion.button>
-                  {submissionMessage && (
-                    <p
-                      className={`md:col-span-2 text-sm ${
-                        submissionStatus === 'error' ? 'text-scarlet' : 'text-aurum'
-                      }`}
-                    >
-                      {submissionMessage}
-                    </p>
-                  )}
-                </form>
+                <FlowerIcon className="h-12 w-12" />
+              </div>
+              <div className="rounded-2xl bg-[#3a0f1a] p-5 text-white">
+                <p className="text-sm font-semibold">We work with people from all over the world.</p>
+                <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-white/80">
+                  <div className="flex items-center gap-2">
+                    <RibbonIcon className="h-5 w-5" /> Architect
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RibbonIcon className="h-5 w-5" /> Marketly
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RibbonIcon className="h-5 w-5" /> Natural
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RibbonIcon className="h-5 w-5" /> Studio
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </PreviewCard>
 
-        <footer className="border-t border-white/10 py-12">
-          <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
-            <p>If you made it this far, you’re one of us.</p>
-            <div className="flex flex-wrap gap-4 text-sm uppercase tracking-[0.3em] text-white/60">
-              {socialPlatforms.map((platform) => (
-                <a
-                  key={platform.name}
-                  href={platform.href}
-                  className="group flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-transparent hover:bg-aurum hover:text-black"
-                >
-                  {platform.icon({ className: 'h-4 w-4' })}
-                  <span className="sr-only">{platform.name}</span>
-                </a>
+          <PreviewCard title="Experience" subtitle="Your trusted partner" className="bg-[#a9c8f7]">
+            <div className="grid gap-4 md:grid-cols-[1.2fr_1fr]">
+              <div>
+                <p className="text-sm text-black/80">
+                  Global experience and human-first strategy for teams building bold digital products.
+                </p>
+                <button className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1f1f1f] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#f6e7c1]">
+                  Get started
+                  <ArrowBadge className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="rounded-2xl bg-white/70 p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/50">Insights</p>
+                <div className="mt-3 flex flex-col gap-2">
+                  {insightCards.map((card) => (
+                    <div key={card.title} className={`rounded-xl p-3 ${card.tone}`}>
+                      <p className="text-sm font-semibold">{card.title}</p>
+                      <p className="text-xs text-black/60">{card.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </PreviewCard>
+
+          <PreviewCard title="What we do" subtitle="We create beautiful, practical work" className="bg-white">
+            <div className="grid gap-4 md:grid-cols-2">
+              {serviceCards.map((card) => (
+                <div key={card.title} className={`rounded-2xl p-4 ${card.tone}`}>
+                  <p className="text-sm font-semibold">{card.title}</p>
+                  <p className="mt-2 text-xs text-black/60">{card.desc}</p>
+                </div>
               ))}
             </div>
-          </div>
-          <div className="mx-auto mt-4 flex max-w-6xl flex-wrap gap-4 px-6 text-xs text-white/50">
-            {[{ label: 'Privacy Policy', href: '/privacy-policy/' }, { label: 'Terms & Conditions', href: '/terms-and-conditions/' }, { label: 'Return & Refund Policy', href: '/return-and-refund-policy/' }].map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-aurum"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-        </footer>
-      </div>
-    </div>
-  );
-}
+          </PreviewCard>
 
-export default function App() {
-  const [entered, setEntered] = useState(false);
+          <PreviewCard title="Portfolio" subtitle="Comprehensive solutions" className="bg-[#f8c9d9]">
+            <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
+              <div className="rounded-2xl bg-white p-4">
+                <p className="text-sm font-semibold">Adaptogenic Brownie</p>
+                <p className="mt-2 text-xs text-black/60">
+                  A full brand system and digital launch plan for a wellness snack.
+                </p>
+                <button className="mt-3 rounded-full border border-black/10 px-4 py-2 text-xs uppercase tracking-[0.2em]">
+                  View project
+                </button>
+              </div>
+              <div className="rounded-2xl bg-[#ffe6f1] p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/50">Case study</p>
+                <p className="mt-2 text-lg font-semibold">Global experience with local nuance.</p>
+                <div className="mt-4 flex items-center gap-2">
+                  <FlowerIcon className="h-8 w-8" />
+                  <span className="text-xs text-black/60">Brand expansion toolkit</span>
+                </div>
+              </div>
+            </div>
+          </PreviewCard>
+        </div>
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const hasEntered = window.localStorage.getItem(ENTRY_STORAGE_KEY);
-    if (hasEntered === 'true') {
-      setEntered(true);
-    }
-  }, []);
+        <div className="space-y-6">
+          <PreviewCard title="About" subtitle="It all started with a simple truth" className="bg-[#a7c8f1]">
+            <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+              <div>
+                <p className="text-sm text-black/70">
+                  Co.mind builds creative ecosystems for startups, founders, and ambitious teams.
+                </p>
+                <div className="mt-4 flex items-center gap-3 rounded-2xl bg-white/70 p-3">
+                  <div className="h-10 w-10 rounded-full bg-[#ffd86f]" />
+                  <div>
+                    <p className="text-sm font-semibold">Cameron Williamson</p>
+                    <p className="text-xs text-black/60">Creative Director</p>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-[#ffe48e] p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/60">What we have</p>
+                <div className="mt-4 space-y-3">
+                  {quickStats.map((stat) => (
+                    <div key={stat.label} className={`rounded-xl p-3 ${stat.tone}`}>
+                      <p className="text-xs uppercase tracking-[0.25em] text-black/50">{stat.label}</p>
+                      <p className="text-lg font-semibold">{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </PreviewCard>
 
-  const handleEntryComplete = () => {
-    setEntered(true);
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(ENTRY_STORAGE_KEY, 'true');
-    }
-  };
+          <PreviewCard title="Communication" subtitle="Communication is key to our success" className="bg-[#f4e3b3]">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl bg-[#541019] p-4 text-white">
+                <p className="text-sm font-semibold">Work smarter, save faster.</p>
+                <ul className="mt-3 space-y-2 text-xs text-white/80">
+                  <li className="flex items-center gap-2">
+                    <DotIcon className="h-2 w-2 text-[#f4e3b3]" />
+                    Daily strategy check-ins
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <DotIcon className="h-2 w-2 text-[#f4e3b3]" />
+                    Campaign to conversion alignment
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <DotIcon className="h-2 w-2 text-[#f4e3b3]" />
+                    Clear project milestones
+                  </li>
+                </ul>
+              </div>
+              <div className="rounded-2xl bg-white p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/50">Testimonial</p>
+                <p className="mt-3 text-sm text-black/70">
+                  “We finally have a brand voice that matches the energy of our product.”
+                </p>
+                <div className="mt-4 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-[#ffd86f]" />
+                  <div>
+                    <p className="text-sm font-semibold">Product Lead</p>
+                    <p className="text-xs text-black/60">Series B SaaS</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </PreviewCard>
 
-  return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(82,39,255,0.25),transparent_45%)] bg-no-repeat"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(255,159,252,0.12),transparent_55%)] bg-no-repeat"
-        aria-hidden
-      />
-      <CursorDot />
-      <div className="relative z-10">
-        <AnimatePresence mode="wait">
-          {!entered ? <EntryGate key="entry" onComplete={handleEntryComplete} /> : <MainSite key="main" />}
-        </AnimatePresence>
-      </div>
-    </div>
+          <PreviewCard title="Results" subtitle="We believe in the power of data" className="bg-[#cdb7ef]">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl bg-white p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/50">Growth</p>
+                <p className="mt-2 text-2xl font-semibold">+260K</p>
+                <p className="text-xs text-black/60">New subscribers in 60 days.</p>
+              </div>
+              <div className="rounded-2xl bg-[#f6f1ff] p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/50">Data mix</p>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="h-16 rounded-xl bg-[#ffd86f]" />
+                  <div className="h-16 rounded-xl bg-[#a7c8f1]" />
+                  <div className="h-16 rounded-xl bg-[#f2d6d4]" />
+                </div>
+              </div>
+            </div>
+          </PreviewCard>
+
+          <PreviewCard title="Latest" subtitle="The latest from Co.mind" className="bg-white">
+            <div className="grid gap-3 md:grid-cols-3">
+              {['Swiss Template', 'Stress Template', 'UX Research'].map((item) => (
+                <div key={item} className="rounded-2xl bg-[#eef0ff] p-4 text-center">
+                  <FlowerIcon className="mx-auto h-8 w-8" />
+                  <p className="mt-2 text-xs font-semibold">{item}</p>
+                </div>
+              ))}
+            </div>
+          </PreviewCard>
+
+          <PreviewCard title="CTA" subtitle="Let us create spaces that inspire" className="bg-[#f7d45c]">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <p className="max-w-sm text-sm text-black/70">
+                Tell us about your product, your mission, and the moment you want to create.
+              </p>
+              <button className="inline-flex items-center gap-2 rounded-full bg-[#1f1f1f] px-6 py-3 text-xs uppercase tracking-[0.25em] text-[#f7d45c]">
+                Get started
+                <ArrowBadge className="h-6 w-6" />
+              </button>
+            </div>
+          </PreviewCard>
+        </div>
+      </section>
+    </main>
   );
 }

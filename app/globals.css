@@ -3,35 +3,11 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: only light;
 }
 
 body {
-  @apply bg-black text-white antialiased font-sans;
-}
-
-.marquee {
-  position: relative;
-  overflow: hidden;
-}
-
-.marquee__inner {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  gap: 3rem;
-  padding: 1rem 0;
-  animation: marquee-scroll 20s linear infinite;
-}
-
-@keyframes marquee-scroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+  @apply bg-[#2f3b1f] text-[#1f1f1f] antialiased font-sans;
 }
 
 ::-webkit-scrollbar {
@@ -39,6 +15,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(165, 0, 0, 0.6);
+  background: rgba(47, 59, 31, 0.6);
   border-radius: 9999px;
 }
